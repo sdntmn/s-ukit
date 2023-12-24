@@ -1,0 +1,16 @@
+.skit-button-icon {
+  padding: 0;
+  margin: 0;
+
+  border: none;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.3s ease-in-out;
+  user-select: none;
+  background: inherit;
+}
+
+.skit-button-icon:hover {
+  border-color: #6f65cb;
+  color: #fff;
+}

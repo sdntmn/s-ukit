@@ -12,7 +12,7 @@ const path = require("path");
 // exclude: исключения
 module.exports = {
   mode: "production",
-  entry: "./src/index.ts",
+  entry: path.resolve(__dirname, "src", "index.ts"),
   output: {
     filename: "index.js",
     path: path.resolve(__dirname, "dist"),
@@ -20,7 +20,7 @@ module.exports = {
     clean: true
   },
   resolve: {
-    extensions: [".ts", ".tsx"]
+    extensions: [".ts", ".tsx", ".js", ".jsx"],
   },
   externals: {
     react: "react"
@@ -28,13 +28,13 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.css/,
+        test: /\.css$/,
         use: ["style-loader", "css-loader"],
       },
       {
         test: /\.(ts|tsx)?$/,
         use: ["ts-loader"],
-        exclude: /node_modules/
+        exclude: /node_modules/,
       }
     ],
 

@@ -1,0 +1,18 @@
+.itpc-icon__sort {
+  height: 100%;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  transition: all ease-in-out 0.3s;
+  fill: #dddddd;
+}
+
+.itpc-icon__sort:hover {
+  fill: #adadad;
+}
+
+.itpc-icon__sort_clickable {
+  cursor: pointer;
+}

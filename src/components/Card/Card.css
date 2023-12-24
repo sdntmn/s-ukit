@@ -1,0 +1,22 @@
+.skit-card {
+  box-shadow: inset 0 -1em 1em rgba(0,0,0,0.2), 0 0 0 1px rgba(0,173,176,0.553), 0.1em 0.1em 0.1em rgba(0,0,0,0.3);
+  outline: 1px solid rgba(0,173,176,0.553);
+  border-radius: 4px;
+  max-width: 267px;
+  width: 100%;
+  cursor: pointer;
+}
+
+.skit-card__bordered {
+  border: 1px solid #5c53ac;
+}
+
+.skit-card__title {
+  margin: 0;
+  font-size: 20px;
+  word-break: break-all;
+}
+
+.skit-card__body {
+  height: 100%;
+}
