@@ -9,7 +9,7 @@ import cn from "classnames"
 import { AriaSort } from "../types"
 
 import "./styles.css"
-import { byKey, byKey3, byKey4, byKey5, byKeys } from "../utils"
+import { byKeys } from "../utils"
 import { IconSortArrDown, IconSortArrUp } from "../_elements/Icons"
 
 interface ICellProps extends TdHTMLAttributes<HTMLTableCellElement> {
@@ -44,7 +44,7 @@ export const Cell: React.FC<ICellProps> = ({
 export interface IRowProps extends HTMLAttributes<HTMLTableRowElement> {
   id?: string
   rowData?: { key: string; [key: string]: string }
-  currentColumnSort?: string[]
+  currentColumnSort?: string
   onPressRow?: (event?: React.MouseEvent<HTMLTableRowElement>) => void
 }
 
@@ -66,7 +66,7 @@ export const Row: React.FC<IRowProps> = ({
             <Cell
               key={cellData[0]}
               value={cellData[1]}
-              isBack={currentColumnSort?.[0] === cellData[0]}
+              isBack={currentColumnSort === cellData[0]}
             />
           )
         }
@@ -79,7 +79,7 @@ export interface ITableBodyProps
   extends HTMLAttributes<HTMLTableSectionElement> {
   id?: string
   sourceData?: { key: string; [key: string]: string }[]
-  currentColumnSort?: string[]
+  currentColumnSort?: string
 }
 
 export const TableBody: React.FC<ITableBodyProps> = ({
@@ -110,33 +110,28 @@ export interface IHeaderTableProps
   isIconClickable?: boolean
   isHeaderCellClickable?: boolean
   isCellHover?: boolean
-  titleColumns?: IDataTitle[]
+  dataTitle?: IDataTitle[]
 
   currentColumnSort?: string[]
 
-  setKeySort?: (
-    key: string,
-    orderSort: AriaSort,
+  setKeySort: (
+    dataIndex: string,
     isSortable: boolean,
+    orderSort?: AriaSort,
     sorter?: (a: IDataBody, b: IDataBody) => number
   ) => void
 }
 
 export const TableHeader: React.FC<IHeaderTableProps> = ({
-  titleColumns,
-  iconSortUp,
-  iconSortDown,
+  dataTitle,
   isIconClickable,
-  isHeaderCellClickable,
-  isCellHover = true,
-
   currentColumnSort,
   setKeySort,
 }: IHeaderTableProps) => (
   <thead className="itpc-table-sort__head">
     <tr>
-      {titleColumns &&
-        Object.entries(titleColumns).map((item) => {
+      {dataTitle &&
+        Object.entries(dataTitle).map((item) => {
           // console.info(Boolean(item[1]?.isSortable) && !item[1]?.isSortable)
           return (
             <th
@@ -148,13 +143,13 @@ export const TableHeader: React.FC<IHeaderTableProps> = ({
                   "itpc-table-sort__head_background"
               )}
               key={item[0]}
-              id={item[1]?.key}
+              id={item[1]?.dataIndex}
               data-column-key={item[1]?.dataIndex}
               onClick={() =>
                 setKeySort?.(
-                  item[1]?.dataIndex,
+                  item[1].dataIndex,
+                  item[1].isSortable,
                   item[1]?.order,
-                  item[1]?.isSortable,
                   item[1]?.sorter
                 )
               }
@@ -184,8 +179,6 @@ export const TableHeader: React.FC<IHeaderTableProps> = ({
                     <IconSortArrUp isClickable={isIconClickable} />
                   )}
                 </div>
-                {/* <IconUnlock isClickable={isIconClickable} />
-                  <IconLock isClickable={isIconClickable} /> */}
               </div>
             </th>
           )
@@ -226,7 +219,8 @@ export interface ITableSortTwoColumnProps
     key: string
     dataIndex: string
     title: string
-    order?: string
+    isSortable: boolean
+    order?: AriaSort
     sorter?: (a: IDataBody, b: IDataBody) => number
   }[]
   sourceData?: { key: string; [key: string]: string }[]
@@ -237,11 +231,6 @@ export interface ITableSortTwoColumnProps
   iconSortUp?: React.ReactNode
   iconSortDown?: React.ReactNode
   sortedTable?: (typeSort: string, nameColumn: string) => void
-}
-
-interface IKeyColumn {
-  key: string
-  order: AriaSort | undefined
 }
 
 export interface IDataTitle {
@@ -270,7 +259,7 @@ export interface ISaveKeys {
   secondKey?: IParametersSort
 }
 
-export interface IArrayId {
+export interface ISaveOrder {
   index: number
   key: string
 }
@@ -290,69 +279,52 @@ export const TableSortTwoColumn: React.FC<ITableSortTwoColumnProps> = ({
   sortedTable,
   ...rest
 }: ITableSortTwoColumnProps) => {
-  // const newArrObj = sourceData?.map((item) => {
-  //   const result = Object.assign(item)
-  //   return result
-  // })
-
-  const newArrTitle = titleColumns?.map((item) => {
-    const result = Object.assign(item)
-    return result
-  })
-
-  const [orderSortMainColumn, setOrderSortMainColumn] = useState<AriaSort>(
-    AriaSort.NONE
-  )
   const [keysTitles, setKeysTitles] = useState<string[]>([])
   const [saveKeys, setSaveKeys] = useState<ISaveKeys>({})
-  const [orderSortColumn, setOrderSort] = useState<AriaSort>(AriaSort.NONE)
-  const [dataBody, setDataBody] = useState<IDataBody[] | undefined>(
+  const [dataBody, setDataBody] = useState<IDataBody[]>(
     sourceData ? sourceData : []
   )
-  const [orderOriginal, setOrderOriginal] = useState<IArrayId[] | undefined>([])
-  const [orderMainSorting, setOrderMainSorting] = useState<
-    IArrayId[] | undefined
-  >([])
+  const [orderOriginal, setOrderOriginal] = useState<ISaveOrder[]>([])
+  const [orderMainSorting, setOrderMainSorting] = useState<ISaveOrder[]>([])
   const [dataTitle, setDataTitle] = useState<IDataTitle[] | undefined>(
-    newArrTitle
+    titleColumns
   )
 
-  const [dataTitle2, setDataTitle2] = useState<IDataTitle[] | undefined>(
-    newArrTitle
-  )
-
+  // получение ключей из шапки таблицы
   const setKeySort = (
     dataIndex: string = "",
-    orderSort: AriaSort,
     isSortable: boolean,
+    orderSort?: AriaSort,
     sorter?: (a: IDataBody, b: IDataBody) => number
   ) => {
     const keys = {
       dataIndex,
-      orderSort: !orderSort ? AriaSort.NONE : orderSort,
       isSortable,
+      orderSort: !orderSort ? AriaSort.NONE : orderSort,
       sorter:
         !sorter && isSortable
           ? (a: IDataBody, b: IDataBody): number => {
-              return Number(a.name < b.name) - Number(a.name > b.name)
+              return Number(a.name > b.name) - Number(a.name < b.name)
             }
           : sorter,
     }
-    // addPropertyArrTitle(dataIndex)
 
-    updateCurrentKeys(keys)
+    setParametersKeys(keys)
   }
 
-  const saveOrder = (currentKeys: ISaveKeys | undefined) => {
+  // сохранение начального порядка данных
+  // если ключ основной - сохраняет первоначальный порядок dataBody в виде { index: i, key: el.key }
+  // если ключ второстепенный - сохраняет первоначальный порядок согласно первоначальной сортировки по main ключу
+  const saveOrder = (currentKeys: ISaveKeys | undefined): void => {
     if (currentKeys) {
-      let mapped: IArrayId[]
+      let order: ISaveOrder[]
       if (dataBody) {
         if (currentKeys.mainKey) {
           if (!orderOriginal || orderOriginal?.length !== dataBody.length) {
-            mapped = dataBody.map((el, i) => {
+            order = dataBody.map((el: IDataBody, i: number) => {
               return { index: i, key: el.key }
             })
-            setOrderOriginal(mapped)
+            setOrderOriginal(order)
           }
         }
         if (currentKeys.secondKey) {
@@ -360,20 +332,15 @@ export const TableSortTwoColumn: React.FC<ITableSortTwoColumnProps> = ({
             !orderMainSorting ||
             orderMainSorting?.length !== dataBody.length
           ) {
-            mapped = dataBody.map((el, i) => {
+            order = dataBody.map((el: IDataBody, i: number) => {
               return { index: i, key: el.key }
             })
-            setOrderMainSorting(mapped)
+            setOrderMainSorting(order)
           }
           return
         }
       }
     }
-  }
-
-  const addPropertyTitle = (keyPro: ISaveKeys) => {
-    let copy: IDataTitle[] = Object?.assign([], dataTitle)
-    const cloneData = dataBody?.slice()
   }
 
   // переключатель свойств сортировки order:AriaSort
@@ -390,55 +357,34 @@ export const TableSortTwoColumn: React.FC<ITableSortTwoColumnProps> = ({
     }
   }
 
-  const updateCurrentKeys = (keys: IParametersSort) => {
-    let updateCurrentKeysOrder: ISaveKeys
-    console.info(keys)
+  // установка свойств текущих полученных ключей
+  // - переключение порядка сортировки
+  // - установка какого они типа - основной (main) или второстепенный (second)
+  const setParametersKeys = (keys: IParametersSort) => {
+    let updatedCurrentKeys: ISaveKeys
     if (
       !Boolean(saveKeys.mainKey) ||
-      (saveKeys.mainKey?.dataIndex === keys.dataIndex && !saveKeys.secondKey)
+      saveKeys.mainKey?.dataIndex === keys.dataIndex
     ) {
-      updateCurrentKeysOrder = {
+      updatedCurrentKeys = {
         mainKey: {
           ...keys,
           orderSort: toggleSort(keys.orderSort || AriaSort.NONE),
         },
       }
-      return processingKeys(updateCurrentKeysOrder)
-    }
-
-    if (saveKeys.mainKey?.dataIndex === keys.dataIndex && saveKeys.secondKey) {
-      updateCurrentKeysOrder = {
-        mainKey: {
-          ...keys,
-          orderSort: toggleSort(keys.orderSort || AriaSort.NONE),
-        },
-        secondKey: { ...saveKeys.secondKey },
-      }
-      return processingKeys(updateCurrentKeysOrder)
+      return processingKeys(updatedCurrentKeys)
     }
     if (
       Boolean(saveKeys.mainKey) &&
       saveKeys.mainKey?.dataIndex !== keys.dataIndex
     ) {
-      updateCurrentKeysOrder = {
+      updatedCurrentKeys = {
         secondKey: {
           ...keys,
           orderSort: toggleSort(keys.orderSort || AriaSort.NONE),
         },
       }
-      return processingKeys(updateCurrentKeysOrder)
-    }
-  }
-
-  const resetOrder = (currentKeys: ISaveKeys) => {
-    if (currentKeys.mainKey) {
-      resetKeys()
-      const data = resetSortingOrder(currentKeys)
-      setDataBody(data)
-    }
-    if (currentKeys.secondKey) {
-      const data = resetSortingOrder(currentKeys)
-      setDataBody(data)
+      return processingKeys(updatedCurrentKeys)
     }
   }
 
@@ -446,29 +392,35 @@ export const TableSortTwoColumn: React.FC<ITableSortTwoColumnProps> = ({
     setSaveKeys({})
   }
 
+  // восстановление начального порядка данных
+  // если ключ основной - восстанавливает первоначальный порядок dataBody
+  // если ключ второстепенный - восстанавливает первоначальный порядок согласно первоначальной сортировки по main ключу
   const resetSortingOrder = (currentKeys: ISaveKeys) => {
-    if (
-      (currentKeys.mainKey && orderOriginal && Boolean(dataBody)) ||
-      orderOriginal?.length !== dataBody?.length
-    ) {
-      let result: IDataBody[] = orderOriginal?.map(function (el: IArrayId) {
-        return dataBody?.find((elBody: IDataBody) => elBody?.key === el?.key)
-      })
+    if (dataBody) {
+      if (currentKeys.mainKey || orderOriginal?.length !== dataBody?.length) {
+        let result = orderOriginal?.map(function (el: ISaveOrder) {
+          return dataBody.find((elBody: IDataBody) => elBody.key === el.key)
+        })
 
-      return result
-    }
-    if (currentKeys.secondKey && orderMainSorting && Boolean(dataBody)) {
-      let result: IDataBody[] = orderMainSorting?.map(function (el: IArrayId) {
-        return dataBody?.find((elBody: IDataBody) => elBody?.key === el?.key)
-      })
+        if (result) {
+          setDataBody(result as IDataBody[])
+        }
+      }
+      if (currentKeys.secondKey && orderMainSorting) {
+        let result = orderMainSorting?.map(function (el: ISaveOrder) {
+          return dataBody.find((elBody: IDataBody) => elBody.key === el.key)
+        })
 
-      return result
+        if (result) {
+          setDataBody(result as IDataBody[])
+        }
+      }
     }
   }
 
+  // обработка действий в зависимости какого типа получены ключ mainKey или second и какой тип сортировки в этих ключах
   const processingKeys = (currentKeys: ISaveKeys) => {
-    let keysSort
-    console.info(dataTitle)
+    let keysSort: ISaveKeys
 
     if (currentKeys.mainKey) {
       if (
@@ -481,7 +433,7 @@ export const TableSortTwoColumn: React.FC<ITableSortTwoColumnProps> = ({
           },
         }
         setSaveKeys(keysSort)
-        addPropertyArrTitle2(keysSort, currentKeys)
+        updateDataTitle(keysSort, currentKeys)
         return doSorting(keysSort, currentKeys)
       }
 
@@ -498,23 +450,42 @@ export const TableSortTwoColumn: React.FC<ITableSortTwoColumnProps> = ({
           },
         }
         setSaveKeys(keysSort)
-        addPropertyArrTitle2(keysSort, currentKeys)
-        return resetOrder(currentKeys)
+        updateDataTitle(keysSort, currentKeys)
+        return doSorting(keysSort, currentKeys)
       }
 
-      if (currentKeys.mainKey.orderSort === AriaSort.NONE) {
+      if (
+        currentKeys.mainKey.orderSort === AriaSort.NONE &&
+        !saveKeys.secondKey
+      ) {
+        keysSort = {
+          mainKey: {
+            ...currentKeys.mainKey,
+          },
+        }
+        setSaveKeys(keysSort)
+        updateDataTitle(keysSort, currentKeys)
+        resetKeys()
+        return resetSortingOrder(currentKeys)
+      }
+
+      if (
+        currentKeys.mainKey.orderSort === AriaSort.NONE &&
+        saveKeys.secondKey
+      ) {
         keysSort = {
           mainKey: {
             ...currentKeys.mainKey,
           },
           secondKey: {
-            ...saveKeys.secondKey,
+            ...saveKeys?.secondKey,
             orderSort: AriaSort.NONE,
           },
         }
         setSaveKeys(keysSort)
-        addPropertyArrTitle2(keysSort, currentKeys)
-        return resetOrder(currentKeys)
+        updateDataTitle(keysSort, currentKeys)
+        resetKeys()
+        return resetSortingOrder(currentKeys)
       }
     }
 
@@ -525,7 +496,7 @@ export const TableSortTwoColumn: React.FC<ITableSortTwoColumnProps> = ({
           secondKey: { ...currentKeys.secondKey },
         }
         setSaveKeys(keysSort)
-        addPropertyArrTitle2(keysSort, currentKeys)
+        updateDataTitle(keysSort, currentKeys)
         return doSorting(keysSort, currentKeys)
       }
 
@@ -535,56 +506,54 @@ export const TableSortTwoColumn: React.FC<ITableSortTwoColumnProps> = ({
           secondKey: { ...currentKeys.secondKey },
         }
         setSaveKeys(keysSort)
-        addPropertyArrTitle2(keysSort, currentKeys)
-        return resetOrder(currentKeys)
+        updateDataTitle(keysSort, currentKeys)
+        return resetSortingOrder(currentKeys)
       }
     }
   }
 
+  // функция сортировки
+  // запускает процессы сортировки согласно текущим ключам и сохраненных
   const doSorting = (keysSort: ISaveKeys, currentKeys: ISaveKeys) => {
     saveOrder(currentKeys)
 
     if (dataBody && keysSort) {
       let cloneData: IDataBody[] = dataBody?.slice()
       if (
-        keysSort.mainKey &&
-        keysSort.mainKey.orderSort === AriaSort.ASCENDING
+        currentKeys.mainKey &&
+        currentKeys.mainKey.orderSort === AriaSort.ASCENDING
       ) {
         const sortData: IDataBody[] = cloneData.sort(byKeys(keysSort))
         setDataBody(() => [...sortData])
       }
       if (
-        dataBody &&
-        keysSort.mainKey &&
-        keysSort.mainKey.orderSort === AriaSort.DESCENDING
+        currentKeys.mainKey &&
+        currentKeys.mainKey.orderSort === AriaSort.DESCENDING &&
+        keysSort.secondKey?.orderSort === AriaSort.NONE
       ) {
         setDataBody(() => [...dataBody.reverse()])
       }
+      if (
+        currentKeys.mainKey &&
+        currentKeys.mainKey.orderSort === AriaSort.DESCENDING &&
+        keysSort.secondKey?.orderSort !== AriaSort.NONE
+      ) {
+        const sortData: IDataBody[] = cloneData.sort(byKeys(keysSort))
+        setDataBody(() => [...sortData])
+      }
 
-      if (dataBody && keysSort.secondKey) {
+      if (currentKeys.secondKey) {
         const sortData: IDataBody[] = cloneData.sort(byKeys(keysSort))
         setDataBody(() => [...sortData])
       }
     }
   }
 
-  // метод изменения свойств (order) объекта Title
-  const addPropertyArrTitle2 = (
-    keysSort: ISaveKeys,
-    currentKeys: ISaveKeys
-  ) => {
+  // обновление свойств (order) объекта Title
+  const updateDataTitle = (keysSort: ISaveKeys, currentKeys: ISaveKeys) => {
     let copy: IDataTitle[] = Object?.assign([], dataTitle)
-    console.info(keysSort)
-    console.info(keysSort.secondKey)
-    console.info(keysSort.secondKey?.dataIndex)
-    console.info(currentKeys)
-    const newDataTitle = copy?.map((item) => {
+    const newDataTitle = copy?.map((item: IDataTitle) => {
       if (currentKeys.mainKey) {
-        console.info(323)
-        console.info(item)
-        console.info(item.dataIndex)
-        console.info(keysSort.secondKey?.dataIndex)
-        console.info(item.dataIndex === keysSort.secondKey?.dataIndex)
         if (item.dataIndex === currentKeys.mainKey?.dataIndex) {
           return {
             ...item,
@@ -592,7 +561,6 @@ export const TableSortTwoColumn: React.FC<ITableSortTwoColumnProps> = ({
           }
         }
         if (item.dataIndex === keysSort.secondKey?.dataIndex) {
-          console.info(324)
           return {
             ...item,
             order: keysSort.secondKey?.orderSort,
@@ -600,7 +568,6 @@ export const TableSortTwoColumn: React.FC<ITableSortTwoColumnProps> = ({
         }
 
         if (item.dataIndex !== keysSort.secondKey?.dataIndex) {
-          console.info(325)
           return {
             ...item,
             order: AriaSort.NONE,
@@ -631,84 +598,13 @@ export const TableSortTwoColumn: React.FC<ITableSortTwoColumnProps> = ({
     })
     setDataTitle(newDataTitle as IDataTitle[])
   }
-  console.info(dataTitle2)
-
-  // смена свойств массива объектов заголовков, добавляет и меняет order: AriaSort
-  const changeProperty = (item: IDataTitle, key: string) => {
-    if (key === item.dataIndex) {
-      return { ...item, order: toggleSort(item.order || AriaSort.NONE) }
-    } else {
-      return item
-    }
-  }
-
-  // метод изменения свойств (order) объекта Title
-  // const addPropertyArrTitle = (key: string) => {
-  //   let copy: IDataTitle[] = Object?.assign([], dataTitle)
-
-  //   const newDataTitle = copy?.map((item) => {
-  //     const isKeyInList: boolean = keysTitles.includes(key)
-
-  //     if (isKeyInList) {
-  //       if (Boolean(keysTitles[1])) {
-  //         if (key === keysTitles[0]) {
-  //           if (orderSortMainColumn === AriaSort.DESCENDING) {
-  //             resetKeys()
-  //             return {
-  //               ...item,
-  //               order: AriaSort.NONE,
-  //             }
-  //           } else {
-  //             if (key === item.dataIndex) {
-  //               setOrderSortMainColumn(toggleSort(item.order || AriaSort.NONE))
-  //               return {
-  //                 ...item,
-  //                 order: toggleSort(item.order || AriaSort.NONE),
-  //               }
-  //             } else {
-  //               return item
-  //             }
-  //           }
-  //         }
-  //         // работает
-  //         if (key === keysTitles[1]) {
-  //           return changeProperty(item, key)
-  //         }
-  //       } else {
-  //         return changeProperty(item, key)
-  //       }
-  //     }
-
-  //     if (!isKeyInList) {
-  //       if (Boolean(keysTitles[1])) {
-  //         if (key === item.dataIndex) {
-  //           return {
-  //             ...item,
-  //             order: toggleSort(item.order || AriaSort.NONE),
-  //           }
-  //         }
-  //         if (keysTitles[1] === item.dataIndex) {
-  //           return {
-  //             ...item,
-  //             order: AriaSort.NONE,
-  //           }
-  //         }
-  //         return item
-  //       } else {
-  //         return changeProperty(item, key)
-  //       }
-  //     }
-  //   })
-
-  //   setDataTitle(newDataTitle as IDataTitle[])
-  // }
 
   return (
     <table id={id} className={cn("itpc-table-sort", className)} {...rest}>
       {captionTable && <TableCaption captionTable={captionTable} />}
       {dataTitle && (
         <TableHeader
-          titleColumns={dataTitle}
+          dataTitle={dataTitle}
           setKeySort={setKeySort}
           currentColumnSort={keysTitles}
           isHeaderCellClickable={isHeaderCellClickable}
@@ -718,7 +614,10 @@ export const TableSortTwoColumn: React.FC<ITableSortTwoColumnProps> = ({
         />
       )}
       {dataBody && (
-        <TableBody sourceData={dataBody} currentColumnSort={keysTitles} />
+        <TableBody
+          sourceData={dataBody}
+          currentColumnSort={saveKeys.mainKey?.dataIndex}
+        />
       )}
     </table>
   )

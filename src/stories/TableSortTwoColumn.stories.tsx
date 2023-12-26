@@ -57,7 +57,7 @@ const header: IDataTitle[] = [
 const rows: IDataBody[] = [
   { key: "1", name: "Сергей", age: "25", duty: "50" },
   { key: "4", name: "Рома", age: "19", duty: "500.02" },
-  { key: "5", name: "Алексей", age: "19", duty: "1.10" },
+  { key: "5", name: "Алексей", age: "9", duty: "1.10" },
   { key: "6", name: "Борис", age: "19", duty: "250" },
   { key: "2", name: "Сергей", age: "35", duty: "51" },
   { key: "7", name: "Яша", age: "100", duty: "250" },

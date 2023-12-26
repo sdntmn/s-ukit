@@ -1,7 +1,7 @@
 import {
   IDataBody,
   IDataTitle,
-  ISortingKeys,
+  ISaveKeys,
 } from "./TableSortTwoColumn/TableSortTwoColumn"
 import { AriaSort } from "./types"
 
@@ -116,7 +116,7 @@ export const byKey3 =
 //   return (b.name<a.name) - (a.name<b.name) || (b.id<a.id) - (a.id<b.id);
 // })
 
-export const byKey4 = (keyPro: ISortingKeys, dataBody?: IDataBody[]) => {
+export const byKey4 = (keyPro: ISaveKeys, dataBody?: IDataBody[]) => {
   // console.info(keyPro)
   // console.info(dataBody)
   keyPro?.mainKey?.dataIndex
@@ -156,8 +156,7 @@ export const byKey4 = (keyPro: ISortingKeys, dataBody?: IDataBody[]) => {
 // })
 
 export const byKeys =
-  (currentKeys: ISortingKeys) => (a: IDataBody, b: IDataBody) => {
-    // if (keyPro?.mainKey?.sorter) {
+  (currentKeys: ISaveKeys) => (a: IDataBody, b: IDataBody) => {
     if (currentKeys.mainKey?.sorter?.(a, b) === 0) {
       if (
         currentKeys?.secondKey?.sorter &&
@@ -173,6 +172,9 @@ export const byKeys =
       }
     } else {
       if (currentKeys.mainKey?.sorter) {
+        if (currentKeys.mainKey.orderSort === AriaSort.DESCENDING) {
+          return currentKeys.mainKey.sorter(a, b) * -1
+        }
         return currentKeys.mainKey.sorter(a, b)
       }
     }
