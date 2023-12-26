@@ -15,9 +15,9 @@ export const IconSortArrDown: React.FC<Props> = ({
 }) => (
   <i
     className={cn(
-      "itpc-icon__sort",
-      isClickable && "itpc-icon__sort_clickable",
-      isActiveIcon && "itpc-icon__sort_color"
+      "s-ukit-icon__sort",
+      isClickable && "s-ukit-icon__sort_clickable",
+      isActiveIcon && "s-ukit-icon__sort_color"
     )}
   >
     <svg

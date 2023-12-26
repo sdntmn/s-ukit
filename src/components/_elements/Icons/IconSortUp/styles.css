@@ -1,4 +1,4 @@
-.itpc-icon__sort {
+.s-ukit-icon__sort {
   height: 100%;
   padding: 0 10px;
   display: flex;
@@ -9,10 +9,10 @@
   fill: #dddddd;
 }
 
-.itpc-icon__sort:hover {
+.s-ukit-icon__sort:hover {
   fill: #adadad;
 }
 
-.itpc-icon__sort_clickable {
+.s-ukit-icon__sort_clickable {
   cursor: pointer;
 }

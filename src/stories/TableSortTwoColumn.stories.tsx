@@ -20,11 +20,6 @@ export default meta
 
 type Story = StoryObj<typeof TableSortTwoColumn>
 
-export interface Item {
-  key: string
-  value: string
-}
-
 const header: IDataTitle[] = [
   {
     key: "id1",
@@ -72,7 +67,6 @@ export const Base: Story = {
       captionTable="Table caption"
       titleColumns={header}
       sourceData={rows}
-      arrKeySortAsNumber={arrKeySortAsNumber}
       {...args}
     ></TableSortTwoColumn>
   ),

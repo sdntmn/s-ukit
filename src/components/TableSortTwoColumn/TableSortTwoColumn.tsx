@@ -9,7 +9,7 @@ import cn from "classnames"
 import { AriaSort } from "../types"
 
 import "./styles.css"
-import { byKeys } from "../utils"
+import { byKeys, toggleSort } from "../utils"
 import { IconSortArrDown, IconSortArrUp } from "../_elements/Icons"
 
 interface ICellProps extends TdHTMLAttributes<HTMLTableCellElement> {
@@ -29,10 +29,10 @@ export const Cell: React.FC<ICellProps> = ({
   <td
     id={id}
     className={cn(
-      "itpc-table__cell",
+      "s-ukit-table-sort__cell",
 
-      isBack && "itpc-table-sort__cell_back",
-      onPressCell && "itpc-table__cell_clickable"
+      isBack && "s-ukit-table-sort__cell_back",
+      onPressCell && "s-ukit-table-sort_clickable"
     )}
     onClick={onPressCell && onPressCell}
     {...rest}
@@ -55,7 +55,10 @@ export const Row: React.FC<IRowProps> = ({
   ...rest
 }: IRowProps) => (
   <tr
-    className={cn("itpc-table__row", onPressRow && "itpc-table__row_clickable")}
+    className={cn(
+      "s-ukit-table-sort__row",
+      onPressRow && "s-ukit-table-sort__row_clickable"
+    )}
     onClick={onPressRow && onPressRow}
     {...rest}
   >
@@ -89,7 +92,7 @@ export const TableBody: React.FC<ITableBodyProps> = ({
 
   ...rest
 }: ITableBodyProps) => (
-  <tbody className="itpc-table__body" {...rest}>
+  <tbody className="s-ukit-table-sort__body" {...rest}>
     {sourceData &&
       sourceData.map((items, index) => (
         <Row
@@ -128,7 +131,7 @@ export const TableHeader: React.FC<IHeaderTableProps> = ({
   currentColumnSort,
   setKeySort,
 }: IHeaderTableProps) => (
-  <thead className="itpc-table-sort__head">
+  <thead className="s-ukit-table-sort__head">
     <tr>
       {dataTitle &&
         Object.entries(dataTitle).map((item) => {
@@ -136,11 +139,12 @@ export const TableHeader: React.FC<IHeaderTableProps> = ({
           return (
             <th
               className={cn(
-                "itpc-table-sort__head",
-                Boolean(item[1]?.isSortable) && "itpc-icon__sort_clickable",
-                !Boolean(item[1]?.isSortable) && "itpc-table-sort_pointer-none",
+                "s-ukit-table-sort__head",
+                Boolean(item[1]?.isSortable) && "s-ukit-table-sort_clickable",
+                !Boolean(item[1]?.isSortable) &&
+                  "s-ukit-table-sort_pointer-none",
                 currentColumnSort?.[0] === item[1]?.dataIndex &&
-                  "itpc-table-sort__head_background"
+                  "s-ukit-table-sort__head_background"
               )}
               key={item[0]}
               id={item[1]?.dataIndex}
@@ -154,9 +158,9 @@ export const TableHeader: React.FC<IHeaderTableProps> = ({
                 )
               }
             >
-              <div className="itpc-table-sort__wrap-cell">
+              <div className="s-ukit-table-sort__wrap-cell">
                 {item[1]?.title}
-                <div className="itpc-table__wrap-icon">
+                <div className="s-ukit-table-sort__wrap-icon">
                   {Boolean(item[1]?.isSortable) &&
                     item[1]?.order === AriaSort.ASCENDING && (
                       <IconSortArrUp
@@ -166,7 +170,7 @@ export const TableHeader: React.FC<IHeaderTableProps> = ({
                     )}
                   {Boolean(item[1]?.isSortable) &&
                     item[1]?.order === AriaSort.NONE && (
-                      <IconSortArrUp isClickable={isIconClickable} />
+                      <IconSortArrDown isClickable={isIconClickable} />
                     )}
                   {Boolean(item[1]?.isSortable) &&
                     item[1]?.order === AriaSort.DESCENDING && (
@@ -176,7 +180,7 @@ export const TableHeader: React.FC<IHeaderTableProps> = ({
                       />
                     )}
                   {Boolean(item[1]?.isSortable) && !item[1]?.order && (
-                    <IconSortArrUp isClickable={isIconClickable} />
+                    <IconSortArrDown isClickable={isIconClickable} />
                   )}
                 </div>
               </div>
@@ -198,7 +202,7 @@ export const TableCaption: React.FC<ITableCaption> = ({
 }: ITableSortTwoColumnProps) => (
   <>
     {captionTable && (
-      <caption className={cn("itpc-table-sort__caption", className)}>
+      <caption className={cn("s-ukit-table-sort__caption", className)}>
         {captionTable}
       </caption>
     )}
@@ -215,14 +219,7 @@ export interface ITableSortTwoColumnProps
   id?: string
   className?: string
   captionTable?: string
-  titleColumns?: {
-    key: string
-    dataIndex: string
-    title: string
-    isSortable: boolean
-    order?: AriaSort
-    sorter?: (a: IDataBody, b: IDataBody) => number
-  }[]
+  titleColumns?: IDataTitle[]
   sourceData?: { key: string; [key: string]: string }[]
   colorSortableColumn?: boolean
   arrKeySortAsNumber?: string[]
@@ -286,6 +283,9 @@ export const TableSortTwoColumn: React.FC<ITableSortTwoColumnProps> = ({
   )
   const [orderOriginal, setOrderOriginal] = useState<ISaveOrder[]>([])
   const [orderMainSorting, setOrderMainSorting] = useState<ISaveOrder[]>([])
+  const [reversOrderMainSorting, setReversOrderMainSorting] = useState<
+    ISaveOrder[]
+  >([])
   const [dataTitle, setDataTitle] = useState<IDataTitle[] | undefined>(
     titleColumns
   )
@@ -316,44 +316,37 @@ export const TableSortTwoColumn: React.FC<ITableSortTwoColumnProps> = ({
   // если ключ основной - сохраняет первоначальный порядок dataBody в виде { index: i, key: el.key }
   // если ключ второстепенный - сохраняет первоначальный порядок согласно первоначальной сортировки по main ключу
   const saveOrder = (currentKeys: ISaveKeys | undefined): void => {
-    if (currentKeys) {
+    if (currentKeys && dataBody) {
       let order: ISaveOrder[]
-      if (dataBody) {
-        if (currentKeys.mainKey) {
-          if (!orderOriginal || orderOriginal?.length !== dataBody.length) {
-            order = dataBody.map((el: IDataBody, i: number) => {
-              return { index: i, key: el.key }
-            })
-            setOrderOriginal(order)
-          }
-        }
-        if (currentKeys.secondKey) {
-          if (
-            !orderMainSorting ||
-            orderMainSorting?.length !== dataBody.length
-          ) {
-            order = dataBody.map((el: IDataBody, i: number) => {
-              return { index: i, key: el.key }
-            })
-            setOrderMainSorting(order)
-          }
-          return
+      if (currentKeys.mainKey) {
+        if (!orderOriginal || orderOriginal?.length !== dataBody.length) {
+          order = dataBody.map((el: IDataBody, i: number) => {
+            return { index: i, key: el.key }
+          })
+          setOrderOriginal(order)
         }
       }
-    }
-  }
 
-  // переключатель свойств сортировки order:AriaSort
-  const toggleSort = (orderSort: AriaSort): AriaSort => {
-    switch (orderSort) {
-      case AriaSort.NONE:
-        return AriaSort.ASCENDING
-      case AriaSort.ASCENDING:
-        return AriaSort.DESCENDING
-      case AriaSort.DESCENDING:
-        return AriaSort.NONE
-      default:
-        return AriaSort.NONE
+      if (currentKeys.secondKey) {
+        if (orderMainSorting?.length !== dataBody.length) {
+          order = dataBody.map((el: IDataBody, i: number) => {
+            return { index: i, key: el.key }
+          })
+          setOrderMainSorting(order)
+        }
+
+        if (
+          saveKeys.mainKey?.orderSort === AriaSort.ASCENDING &&
+          reversOrderMainSorting?.length !== dataBody.length
+        ) {
+          order = orderMainSorting.reverse().map(function (el, i) {
+            return { index: (el.index = i), key: el.key }
+          })
+          setReversOrderMainSorting(order)
+        }
+
+        return
+      }
     }
   }
 
@@ -403,11 +396,32 @@ export const TableSortTwoColumn: React.FC<ITableSortTwoColumnProps> = ({
         })
 
         if (result) {
+          setOrderOriginal([])
+          setOrderMainSorting([])
+          setReversOrderMainSorting([])
           setDataBody(result as IDataBody[])
         }
       }
-      if (currentKeys.secondKey && orderMainSorting) {
+      if (
+        currentKeys.secondKey &&
+        orderMainSorting &&
+        saveKeys.mainKey?.orderSort === AriaSort.DESCENDING
+      ) {
         let result = orderMainSorting?.map(function (el: ISaveOrder) {
+          return dataBody.find((elBody: IDataBody) => elBody.key === el.key)
+        })
+
+        if (result) {
+          setDataBody(result as IDataBody[])
+        }
+      }
+
+      if (
+        currentKeys.secondKey &&
+        reversOrderMainSorting &&
+        saveKeys.mainKey?.orderSort === AriaSort.ASCENDING
+      ) {
+        let result = reversOrderMainSorting?.map(function (el: ISaveOrder) {
           return dataBody.find((elBody: IDataBody) => elBody.key === el.key)
         })
 
@@ -418,7 +432,7 @@ export const TableSortTwoColumn: React.FC<ITableSortTwoColumnProps> = ({
     }
   }
 
-  // обработка действий в зависимости какого типа получены ключ mainKey или second и какой тип сортировки в этих ключах
+  // обработка действий в зависимости какого типа получен ключ mainKey или second и какой тип сортировки в этих ключах
   const processingKeys = (currentKeys: ISaveKeys) => {
     let keysSort: ISaveKeys
 
@@ -542,7 +556,10 @@ export const TableSortTwoColumn: React.FC<ITableSortTwoColumnProps> = ({
         setDataBody(() => [...sortData])
       }
 
-      if (currentKeys.secondKey) {
+      if (
+        currentKeys.secondKey &&
+        keysSort.secondKey?.orderSort !== AriaSort.NONE
+      ) {
         const sortData: IDataBody[] = cloneData.sort(byKeys(keysSort))
         setDataBody(() => [...sortData])
       }
@@ -600,13 +617,12 @@ export const TableSortTwoColumn: React.FC<ITableSortTwoColumnProps> = ({
   }
 
   return (
-    <table id={id} className={cn("itpc-table-sort", className)} {...rest}>
+    <table id={id} className={cn("s-ukit-table-sort", className)} {...rest}>
       {captionTable && <TableCaption captionTable={captionTable} />}
       {dataTitle && (
         <TableHeader
           dataTitle={dataTitle}
           setKeySort={setKeySort}
-          currentColumnSort={keysTitles}
           isHeaderCellClickable={isHeaderCellClickable}
           isIconClickable={isIconClickable}
           iconSortUp={iconSortUp}

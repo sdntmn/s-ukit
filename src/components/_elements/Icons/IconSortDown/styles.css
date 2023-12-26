@@ -1,4 +1,4 @@
-.itpc-icon__sort {
+.s-ukit-icon__sort-down {
   height: 100%;
   padding: 0 10px;
   display: flex;
@@ -8,6 +8,10 @@
   transition: all ease-in-out 0.3s;
 }
 
-.itpc-icon__sort_clickable {
+.s-ukit-icon__sort-down:hover {
+  fill: #6158b1;
+}
+
+.s-ukit-icon__sort_clickable {
   cursor: pointer;
 }

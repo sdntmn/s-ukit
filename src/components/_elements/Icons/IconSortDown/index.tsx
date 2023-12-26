@@ -12,8 +12,8 @@ interface Props {
 export const IconSortDown: React.FC<Props> = ({ isClickable }) => (
   <i
     className={cn(
-      "itpc-icon__sort",
-      isClickable && "itpc-icon__sort_clickable"
+      "s-ukit-icon__sort-down",
+      isClickable && "s-ukit-icon__sort_clickable"
     )}
     // onClick={onClick}
   >
