@@ -9,32 +9,25 @@ import cn from "classnames"
 import { AriaSort } from "../types"
 
 import "./styles.css"
-import { byKeys, toggleSort } from "../utils"
+import { byKeys, doRestoreOrder, doSaveOrder, toggleSort } from "../utils"
 import { IconSortArrDown, IconSortArrUp } from "../_elements/Icons"
 
 interface ICellProps extends TdHTMLAttributes<HTMLTableCellElement> {
-  id?: string
   value?: string
   isBack?: boolean
-  onPressCell?: (event?: React.MouseEvent<HTMLTableCellElement>) => void
 }
 
 export const Cell: React.FC<ICellProps> = ({
-  id = "",
-  onPressCell,
   isBack,
   value,
   ...rest
 }: ICellProps) => (
   <td
-    id={id}
     className={cn(
-      "s-ukit-table-sort__cell",
+      "s-ukit-table-sort-two-column__cell",
 
-      isBack && "s-ukit-table-sort__cell_back",
-      onPressCell && "s-ukit-table-sort_clickable"
+      isBack && "s-ukit-table-sort-two-column__cell_back"
     )}
-    onClick={onPressCell && onPressCell}
     {...rest}
   >
     {value}
@@ -42,26 +35,16 @@ export const Cell: React.FC<ICellProps> = ({
 )
 
 export interface IRowProps extends HTMLAttributes<HTMLTableRowElement> {
-  id?: string
   rowData?: { key: string; [key: string]: string }
-  currentColumnSort?: string
-  onPressRow?: (event?: React.MouseEvent<HTMLTableRowElement>) => void
+  mainColumnSort?: string
 }
 
 export const Row: React.FC<IRowProps> = ({
-  onPressRow,
   rowData,
-  currentColumnSort,
+  mainColumnSort,
   ...rest
 }: IRowProps) => (
-  <tr
-    className={cn(
-      "s-ukit-table-sort__row",
-      onPressRow && "s-ukit-table-sort__row_clickable"
-    )}
-    onClick={onPressRow && onPressRow}
-    {...rest}
-  >
+  <tr className="s-ukit-table-sort-two-column__row" {...rest}>
     {rowData &&
       Object.entries(rowData).map((cellData) => {
         if (cellData[0] !== "key") {
@@ -69,7 +52,7 @@ export const Row: React.FC<IRowProps> = ({
             <Cell
               key={cellData[0]}
               value={cellData[1]}
-              isBack={currentColumnSort === cellData[0]}
+              isBack={mainColumnSort === cellData[0]}
             />
           )
         }
@@ -80,23 +63,21 @@ export const Row: React.FC<IRowProps> = ({
 
 export interface ITableBodyProps
   extends HTMLAttributes<HTMLTableSectionElement> {
-  id?: string
   sourceData?: { key: string; [key: string]: string }[]
-  currentColumnSort?: string
+  mainColumnSort?: string
 }
 
 export const TableBody: React.FC<ITableBodyProps> = ({
-  id,
   sourceData,
-  currentColumnSort,
+  mainColumnSort,
 
   ...rest
 }: ITableBodyProps) => (
-  <tbody className="s-ukit-table-sort__body" {...rest}>
+  <tbody className="s-ukit-table-sort-two-column__body" {...rest}>
     {sourceData &&
       sourceData.map((items, index) => (
         <Row
-          currentColumnSort={currentColumnSort}
+          mainColumnSort={mainColumnSort}
           key={items.key}
           id={items.key}
           rowData={items}
@@ -108,14 +89,12 @@ export const TableBody: React.FC<ITableBodyProps> = ({
 
 export interface IHeaderTableProps
   extends HTMLAttributes<HTMLTableCellElement> {
-  iconSortUp?: React.ReactNode
-  iconSortDown?: React.ReactNode
-  isIconClickable?: boolean
-  isHeaderCellClickable?: boolean
-  isCellHover?: boolean
+  // iconSortUp?: React.ReactNode
+  // iconSortDown?: React.ReactNode
+
   dataTitle?: IDataTitle[]
 
-  currentColumnSort?: string[]
+  mainColumnSort?: string[]
 
   setKeySort: (
     dataIndex: string,
@@ -127,24 +106,23 @@ export interface IHeaderTableProps
 
 export const TableHeader: React.FC<IHeaderTableProps> = ({
   dataTitle,
-  isIconClickable,
-  currentColumnSort,
+  mainColumnSort,
   setKeySort,
 }: IHeaderTableProps) => (
-  <thead className="s-ukit-table-sort__head">
+  <thead className="s-ukit-table-sort-two-column__head">
     <tr>
       {dataTitle &&
         Object.entries(dataTitle).map((item) => {
-          // console.info(Boolean(item[1]?.isSortable) && !item[1]?.isSortable)
           return (
             <th
               className={cn(
-                "s-ukit-table-sort__head",
-                Boolean(item[1]?.isSortable) && "s-ukit-table-sort_clickable",
+                "s-ukit-table-sort-two-column__head",
+                Boolean(item[1]?.isSortable) &&
+                  "s-ukit-table-sort-two-column_clickable",
                 !Boolean(item[1]?.isSortable) &&
-                  "s-ukit-table-sort_pointer-none",
-                currentColumnSort?.[0] === item[1]?.dataIndex &&
-                  "s-ukit-table-sort__head_background"
+                  "s-ukit-table-sort-two-column_pointer-none",
+                mainColumnSort?.[0] === item[1]?.dataIndex &&
+                  "s-ukit-table-sort-two-column__head_background"
               )}
               key={item[0]}
               id={item[1]?.dataIndex}
@@ -158,29 +136,25 @@ export const TableHeader: React.FC<IHeaderTableProps> = ({
                 )
               }
             >
-              <div className="s-ukit-table-sort__wrap-cell">
+              <div className="s-ukit-table-sort-two-column__wrap-cell">
                 {item[1]?.title}
-                <div className="s-ukit-table-sort__wrap-icon">
+                <div className="s-ukit-table-sort-two-column__wrap-icon">
                   {Boolean(item[1]?.isSortable) &&
                     item[1]?.order === AriaSort.ASCENDING && (
                       <IconSortArrUp
-                        isClickable={isIconClickable}
                         isActiveIcon={item[1]?.order === AriaSort.ASCENDING}
                       />
                     )}
                   {Boolean(item[1]?.isSortable) &&
-                    item[1]?.order === AriaSort.NONE && (
-                      <IconSortArrDown isClickable={isIconClickable} />
-                    )}
+                    item[1]?.order === AriaSort.NONE && <IconSortArrUp />}
                   {Boolean(item[1]?.isSortable) &&
                     item[1]?.order === AriaSort.DESCENDING && (
                       <IconSortArrDown
-                        isClickable={isIconClickable}
                         isActiveIcon={item[1]?.order === AriaSort.DESCENDING}
                       />
                     )}
                   {Boolean(item[1]?.isSortable) && !item[1]?.order && (
-                    <IconSortArrDown isClickable={isIconClickable} />
+                    <IconSortArrUp />
                   )}
                 </div>
               </div>
@@ -198,11 +172,10 @@ export interface ITableCaption
 
 export const TableCaption: React.FC<ITableCaption> = ({
   captionTable,
-  className = "",
 }: ITableSortTwoColumnProps) => (
   <>
     {captionTable && (
-      <caption className={cn("s-ukit-table-sort__caption", className)}>
+      <caption className="s-ukit-table-sort-two-column__caption">
         {captionTable}
       </caption>
     )}
@@ -221,13 +194,9 @@ export interface ITableSortTwoColumnProps
   captionTable?: string
   titleColumns?: IDataTitle[]
   sourceData?: { key: string; [key: string]: string }[]
-  colorSortableColumn?: boolean
-  arrKeySortAsNumber?: string[]
-  isHeaderCellClickable?: boolean
-  isIconClickable?: boolean
-  iconSortUp?: React.ReactNode
-  iconSortDown?: React.ReactNode
-  sortedTable?: (typeSort: string, nameColumn: string) => void
+  // isIconClickable?: boolean
+  // iconSortUp?: React.ReactNode
+  // iconSortDown?: React.ReactNode
 }
 
 export interface IDataTitle {
@@ -266,26 +235,15 @@ export const TableSortTwoColumn: React.FC<ITableSortTwoColumnProps> = ({
   captionTable,
   titleColumns,
   sourceData,
-  colorSortableColumn,
-  arrKeySortAsNumber,
   className = "",
-  isHeaderCellClickable,
-  isIconClickable = false,
-  iconSortUp,
-  iconSortDown,
-  sortedTable,
   ...rest
 }: ITableSortTwoColumnProps) => {
-  const [keysTitles, setKeysTitles] = useState<string[]>([])
   const [saveKeys, setSaveKeys] = useState<ISaveKeys>({})
   const [dataBody, setDataBody] = useState<IDataBody[]>(
     sourceData ? sourceData : []
   )
   const [orderOriginal, setOrderOriginal] = useState<ISaveOrder[]>([])
   const [orderMainSorting, setOrderMainSorting] = useState<ISaveOrder[]>([])
-  const [reversOrderMainSorting, setReversOrderMainSorting] = useState<
-    ISaveOrder[]
-  >([])
   const [dataTitle, setDataTitle] = useState<IDataTitle[] | undefined>(
     titleColumns
   )
@@ -316,36 +274,23 @@ export const TableSortTwoColumn: React.FC<ITableSortTwoColumnProps> = ({
   // если ключ основной - сохраняет первоначальный порядок dataBody в виде { index: i, key: el.key }
   // если ключ второстепенный - сохраняет первоначальный порядок согласно первоначальной сортировки по main ключу
   const saveOrder = (currentKeys: ISaveKeys | undefined): void => {
-    if (currentKeys && dataBody) {
-      let order: ISaveOrder[]
-      if (currentKeys.mainKey) {
-        if (!orderOriginal || orderOriginal?.length !== dataBody.length) {
-          order = dataBody.map((el: IDataBody, i: number) => {
-            return { index: i, key: el.key }
-          })
-          setOrderOriginal(order)
+    if (dataBody) {
+      if (currentKeys?.mainKey && orderOriginal?.length !== dataBody.length) {
+        const order: ISaveOrder[] | undefined = doSaveOrder?.(dataBody)
+        if (order) {
+          setOrderOriginal(() => [...order])
         }
       }
 
-      if (currentKeys.secondKey) {
-        if (orderMainSorting?.length !== dataBody.length) {
-          order = dataBody.map((el: IDataBody, i: number) => {
-            return { index: i, key: el.key }
-          })
-          setOrderMainSorting(order)
+      if (
+        orderMainSorting?.length !== dataBody.length &&
+        currentKeys?.secondKey &&
+        currentKeys?.secondKey.orderSort === AriaSort.ASCENDING
+      ) {
+        const order: ISaveOrder[] | undefined = doSaveOrder?.(dataBody)
+        if (order) {
+          setOrderMainSorting(() => [...order])
         }
-
-        if (
-          saveKeys.mainKey?.orderSort === AriaSort.ASCENDING &&
-          reversOrderMainSorting?.length !== dataBody.length
-        ) {
-          order = orderMainSorting.reverse().map(function (el, i) {
-            return { index: (el.index = i), key: el.key }
-          })
-          setReversOrderMainSorting(order)
-        }
-
-        return
       }
     }
   }
@@ -391,39 +336,34 @@ export const TableSortTwoColumn: React.FC<ITableSortTwoColumnProps> = ({
   const resetSortingOrder = (currentKeys: ISaveKeys) => {
     if (dataBody) {
       if (currentKeys.mainKey || orderOriginal?.length !== dataBody?.length) {
-        let result = orderOriginal?.map(function (el: ISaveOrder) {
-          return dataBody.find((elBody: IDataBody) => elBody.key === el.key)
-        })
+        const result = doRestoreOrder(orderOriginal, dataBody)
 
         if (result) {
-          setOrderOriginal([])
-          setOrderMainSorting([])
-          setReversOrderMainSorting([])
           setDataBody(result as IDataBody[])
+          if (saveKeys.mainKey?.orderSort === AriaSort.NONE) {
+            setOrderOriginal([])
+            setOrderMainSorting([])
+          }
         }
       }
       if (
         currentKeys.secondKey &&
-        orderMainSorting &&
-        saveKeys.mainKey?.orderSort === AriaSort.DESCENDING
-      ) {
-        let result = orderMainSorting?.map(function (el: ISaveOrder) {
-          return dataBody.find((elBody: IDataBody) => elBody.key === el.key)
-        })
-
-        if (result) {
-          setDataBody(result as IDataBody[])
-        }
-      }
-
-      if (
-        currentKeys.secondKey &&
-        reversOrderMainSorting &&
         saveKeys.mainKey?.orderSort === AriaSort.ASCENDING
       ) {
-        let result = reversOrderMainSorting?.map(function (el: ISaveOrder) {
-          return dataBody.find((elBody: IDataBody) => elBody.key === el.key)
-        })
+        const result = doRestoreOrder(orderMainSorting, dataBody)
+
+        if (result) {
+          setDataBody(result as IDataBody[])
+        }
+      }
+
+      if (
+        currentKeys.secondKey &&
+        saveKeys.mainKey?.orderSort === AriaSort.DESCENDING
+      ) {
+        const clone: ISaveOrder[] = orderMainSorting.slice()
+        const cloneReverse: ISaveOrder[] = clone.reverse()
+        const result = doRestoreOrder(cloneReverse, dataBody)
 
         if (result) {
           setDataBody(result as IDataBody[])
@@ -617,22 +557,19 @@ export const TableSortTwoColumn: React.FC<ITableSortTwoColumnProps> = ({
   }
 
   return (
-    <table id={id} className={cn("s-ukit-table-sort", className)} {...rest}>
+    <table
+      id={id}
+      className={cn("s-ukit-table-sort-two-column", className)}
+      {...rest}
+    >
       {captionTable && <TableCaption captionTable={captionTable} />}
       {dataTitle && (
-        <TableHeader
-          dataTitle={dataTitle}
-          setKeySort={setKeySort}
-          isHeaderCellClickable={isHeaderCellClickable}
-          isIconClickable={isIconClickable}
-          iconSortUp={iconSortUp}
-          iconSortDown={iconSortDown}
-        />
+        <TableHeader dataTitle={dataTitle} setKeySort={setKeySort} />
       )}
       {dataBody && (
         <TableBody
           sourceData={dataBody}
-          currentColumnSort={saveKeys.mainKey?.dataIndex}
+          mainColumnSort={saveKeys.mainKey?.dataIndex}
         />
       )}
     </table>

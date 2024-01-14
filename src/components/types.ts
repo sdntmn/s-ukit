@@ -6,3 +6,13 @@ export enum AriaSort {
   DESCENDING = "descending",
   OTHER = "other",
 }
+
+export interface IDataBody {
+  key: string
+  [key: string]: string
+}
+
+export interface ISaveOrder {
+  index: number
+  key: string
+}

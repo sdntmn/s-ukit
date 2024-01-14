@@ -44,11 +44,6 @@ const header: IDataTitle[] = [
   },
 ]
 
-// export interface IDataBody {
-//   key: string
-//   [key: string]: string
-// }
-
 const rows: IDataBody[] = [
   { key: "1", name: "Сергей", age: "25", duty: "50" },
   { key: "4", name: "Рома", age: "19", duty: "500.02" },

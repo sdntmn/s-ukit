@@ -6,8 +6,8 @@ import React, {
 } from "react"
 import cn from "classnames"
 
-import { AriaSort } from "../types"
-import { byKey } from "../utils"
+import { AriaSort, IDataBody, ISaveOrder } from "../types"
+import { byKey, doRestoreOrder, doSaveOrder } from "../utils"
 import { IconSortDown, IconSortUp } from "../_elements/Icons"
 import "./styles.css"
 
@@ -26,8 +26,8 @@ export const Cell: React.FC<ICellProps> = ({
   <td
     id={id}
     className={cn(
-      "itpc-table__cell",
-      onPressCell && "itpc-table__cell_clickable"
+      "s-ukit-table-sort-two-button__cell",
+      onPressCell && "s-ukit-table-sort-two-button__cell_clickable"
     )}
     onClick={onPressCell && onPressCell}
     {...rest}
@@ -48,7 +48,10 @@ export const Row: React.FC<IRowProps> = ({
   ...rest
 }: IRowProps) => (
   <tr
-    className={cn("itpc-table__row", onPressRow && "itpc-table__row_clickable")}
+    className={cn(
+      "s-ukit-table-sort-two-button__row",
+      onPressRow && "s-ukit-table-sort-two-button__row_clickable"
+    )}
     onClick={onPressRow && onPressRow}
     {...rest}
   >
@@ -73,7 +76,7 @@ export const TableBody: React.FC<ITableBodyProps> = ({
   sourceData,
   ...rest
 }: ITableBodyProps) => (
-  <tbody className="itpc-table__body" {...rest}>
+  <tbody className="s-ukit-table-sort-two-button__body" {...rest}>
     {sourceData &&
       sourceData.map((items, index) => (
         <Row
@@ -102,48 +105,50 @@ export const TableHeader: React.FC<IHeaderTableProps> = ({
   isIconClickable = true,
   setKeySort,
 }: IHeaderTableProps) => (
-  <thead className="itpc-table__head">
+  <thead className="s-ukit-table-sort-two-button__head">
     <tr>
       {titleColumns &&
         Object.entries(titleColumns).map(
-          (item: [string, { key: string; [key: string]: string }]) => (
-            <th
-              className="itpc-table__head"
-              key={item[0]}
-              id={item[1].key}
-              aria-label={item[1].value}
-              data-column-key={item[1].dataIndex}
-            >
-              <div className="itpc-table-sort__wrap-cell">
-                {item[1].title}
-                <div className="itpc-table__wrap-icon">
-                  <div
-                    onClick={() =>
-                      setKeySort?.(item[1]?.dataIndex, AriaSort.ASCENDING)
-                    }
-                  >
-                    {iconUp ? (
-                      iconUp
-                    ) : (
-                      <IconSortUp isClickable={isIconClickable} />
-                    )}
-                  </div>
+          (item: [string, { key: string; [key: string]: string }]) => {
+            console.info(item)
+            return (
+              <th
+                className="s-ukit-table-sort-two-button__head"
+                key={item[0]}
+                id={item[1].key}
+                data-column-key={item[1].dataIndex}
+              >
+                <div className="s-ukit-table-sort-two-button__wrap-cell">
+                  {item[1].title}
+                  <div className="s-ukit-table-sort-two-button__wrap-icon">
+                    <div
+                      onClick={() =>
+                        setKeySort?.(item[1]?.dataIndex, AriaSort.ASCENDING)
+                      }
+                    >
+                      {iconUp ? (
+                        iconUp
+                      ) : (
+                        <IconSortUp isClickable={isIconClickable} />
+                      )}
+                    </div>
 
-                  <div
-                    onClick={() =>
-                      setKeySort?.(item[1]?.dataIndex, AriaSort.DESCENDING)
-                    }
-                  >
-                    {iconDown ? (
-                      iconDown
-                    ) : (
-                      <IconSortDown isClickable={isIconClickable} />
-                    )}
+                    <div
+                      onClick={() =>
+                        setKeySort?.(item[1]?.dataIndex, AriaSort.DESCENDING)
+                      }
+                    >
+                      {iconDown ? (
+                        iconDown
+                      ) : (
+                        <IconSortDown isClickable={isIconClickable} />
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            </th>
-          )
+              </th>
+            )
+          }
         )}
     </tr>
   </thead>
@@ -160,7 +165,9 @@ export const TableCaption: React.FC<ITableCaption> = ({
 }: ITableSortProps) => (
   <>
     {captionTable && (
-      <caption className={cn("itpc-table-sort__caption", className)}>
+      <caption
+        className={cn("s-ukit-table-sort-two-button__caption", className)}
+      >
         {captionTable}
       </caption>
     )}
@@ -189,13 +196,12 @@ export const TableSortTwoButton: React.FC<ITableSortProps> = ({
   sortedTable,
   ...rest
 }: ITableSortProps) => {
-  const newArrObj = sourceData?.map((item) => {
-    const result = Object.assign(item)
-    return result
-  })
   const [typeSort, setTypeSort] = useState("")
   const [nameKey, setNameKey] = useState("")
-  const [data, setData] = useState(newArrObj)
+  const [dataBody, setDataBody] = useState<IDataBody[]>(
+    sourceData ? sourceData : []
+  )
+  const [orderOriginal, setOrderOriginal] = useState<ISaveOrder[]>([])
 
   const setKeySort = (key: string = "", type: string = AriaSort.NONE) => {
     setNameKey(key)
@@ -204,33 +210,63 @@ export const TableSortTwoButton: React.FC<ITableSortProps> = ({
   }
 
   const doSort = (key: string, type: string) => {
-    const isNumber = arrKeySortAsNumber?.includes(key)
-    const sortData = data?.sort(byKey(key, isNumber))
+    const sortData: IDataBody[] = dataBody?.sort(byKey(key))
+    console.info(key)
+    console.info(type)
+    const order: ISaveOrder[] | undefined = doSaveOrder?.(dataBody)
+    if (order) {
+      setOrderOriginal(() => [...order])
+    }
 
     if (
       (Boolean(key) && key !== nameKey) ||
       (Boolean(type) && type !== typeSort)
     ) {
-      if (Boolean(type) && type === AriaSort.ASCENDING) {
-        setData(sortData)
+      switch (type) {
+        case AriaSort.ASCENDING:
+          return setDataBody(sortData)
+        case AriaSort.DESCENDING:
+          return setDataBody(sortData?.reverse())
+        case AriaSort.NONE:
+          const clone: ISaveOrder[] = orderOriginal.slice()
+          const cloneReverse: ISaveOrder[] = clone.reverse()
+          const result = doRestoreOrder(cloneReverse, dataBody)
+          if (result) {
+            setDataBody(result as IDataBody[])
+          }
+          setNameKey("")
+          setTypeSort("")
+          return
+        default:
+          return AriaSort.NONE
       }
-      if (Boolean(type) && type === AriaSort.DESCENDING) {
-        setData(sortData?.reverse())
-      }
-    } else {
-      setData(newArrObj)
-      setNameKey("")
-      setTypeSort("")
+      //   if (Boolean(type) && type === AriaSort.ASCENDING) {
+      //     setDataBody(sortData)
+      //     if (order) {
+      //       setOrderOriginal(() => [...order])
+      //     }
+      //   }
+      //   if (Boolean(type) && type === AriaSort.DESCENDING) {
+      //     setDataBody(sortData?.reverse())
+      //   }
+      // } else {
+      //   setDataBody(dataBody)
+      //   setNameKey("")
+      //   setTypeSort("")
     }
   }
 
   return (
-    <table id={id} className={cn("itpc-table-sort", className)} {...rest}>
+    <table
+      id={id}
+      className={cn("s-ukit-table-sort-two-button", className)}
+      {...rest}
+    >
       {captionTable && <TableCaption captionTable={captionTable} />}
       {titleColumns && (
         <TableHeader titleColumns={titleColumns} setKeySort={setKeySort} />
       )}
-      {sourceData && <TableBody sourceData={data} />}
+      {sourceData && <TableBody sourceData={dataBody} />}
     </table>
   )
 }

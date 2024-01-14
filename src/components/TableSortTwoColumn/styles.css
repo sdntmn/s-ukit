@@ -1,4 +1,4 @@
-.s-ukit-table-sort {
+.s-ukit-table-sort-two-column {
   width: 100%;
   table-layout: unset;
   border: none;
@@ -8,31 +8,31 @@
   overflow: hidden;
 }
 
-th[scope='row'] {
-  background-color: #d7d9f2;
-}
-
-.s-ukit-table-sort_pointer-none {
+.s-ukit-table-sort-two-column_pointer-none {
   pointer-events: none;
 }
 
-.s-ukit-table-sort__caption {
+.s-ukit-table-sort-two-column__caption {
   margin-bottom: 0.5rem;
   font-size: 14px;
 }
 
-.s-ukit-table-sort__head {
-  background-color: #bec0c7;
+.s-ukit-table-sort-two-column__head {
+  background-color: #b8b8b8;
   cursor: default;
   padding: 10px 10px;
   border-bottom: 1px solid #b2b7c7;
 }
 
-.s-ukit-table-sort__head_background {
+.s-ukit-table-sort-two-column__head:hover {
+  background-color: #a7a7a7;
+}
+
+.s-ukit-table-sort-two-column__head_background {
   background-color: #afb0b8;
 }
 
-.s-ukit-table-sort__column {
+.s-ukit-table-sort-two-column__column {
   padding: 10px;
   font-weight: 400;
   border-bottom: 1px solid #b2b7c7;
@@ -40,20 +40,17 @@ th[scope='row'] {
   cursor: default;
 }
 
-.s-ukit-table-sort_clickable {
+.s-ukit-table-sort-two-column_clickable {
   cursor: pointer;
 }
 
-.s-ukit-table-sort__body {
-}
-
-.s-ukit-table-sort__wrap-cell {
+.s-ukit-table-sort-two-column__wrap-cell {
   display: flex;
   align-items: center;
 }
 
 
-.s-ukit-table-sort__cell {
+.s-ukit-table-sort-two-column__cell {
   padding: 10px;
   font-weight: 400;
   border-bottom: 1px solid #b2b7c7;
@@ -61,24 +58,24 @@ th[scope='row'] {
   cursor: default;
 }
 
-.s-ukit-table-sort__cell_back {
+.s-ukit-table-sort-two-column__cell_back {
   background-color: #e5e5e5;
 }
 
-.s-ukit-table-sort_clickable {
+.s-ukit-table-sort-two-column_clickable {
   cursor: pointer;
 }
 
-.s-ukit-table-sort__row {
+.s-ukit-table-sort-two-column__row {
   cursor: default;
   background-color: transparent;
   border-bottom: 1px solid #b2b7c7;
 }
 
-.s-ukit-table-sort_clickable {
+.s-ukit-table-sort-two-column_clickable {
   cursor: pointer;
 }
 
-.s-ukit-table-sort__row:hover {
+.s-ukit-table-sort-two-column__row:hover {
   background-color: #e5e5e5;
 }

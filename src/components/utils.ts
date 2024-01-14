@@ -1,24 +1,19 @@
-import { IDataBody, ISaveKeys } from "./TableSortTwoColumn/TableSortTwoColumn"
+import {
+  IDataBody,
+  ISaveKeys,
+  ISaveOrder,
+} from "./TableSortTwoColumn/TableSortTwoColumn"
 import { AriaSort } from "./types"
 
-export const byKey =
-  (key: string, isNumber: boolean | undefined) =>
-  (
-    a: { [x: string]: { toLowerCase: () => number } },
-    b: { [x: string]: { toLowerCase: () => number } }
-  ) => {
-    if (isNumber) {
-      return Number(a[key]) - Number(b[key])
-    } else {
-      if (a[key].toLowerCase() < b[key].toLowerCase()) {
-        return -1
-      }
-      if (a[key].toLowerCase() > b[key].toLowerCase()) {
-        return 1
-      }
-      return 0
-    }
+export const byKey = (key: string) => (a: IDataBody, b: IDataBody) => {
+  if (a[key].toLowerCase() < b[key].toLowerCase()) {
+    return -1
   }
+  if (a[key].toLowerCase() > b[key].toLowerCase()) {
+    return 1
+  }
+  return 0
+}
 
 export const byKeys =
   (currentKeys: ISaveKeys) => (a: IDataBody, b: IDataBody) => {
@@ -50,12 +45,33 @@ export const byKeys =
 export const toggleSort = (orderSort: AriaSort): AriaSort => {
   switch (orderSort) {
     case AriaSort.NONE:
-      return AriaSort.DESCENDING
-    case AriaSort.DESCENDING:
       return AriaSort.ASCENDING
     case AriaSort.ASCENDING:
+      return AriaSort.DESCENDING
+    case AriaSort.DESCENDING:
       return AriaSort.NONE
     default:
       return AriaSort.NONE
+  }
+}
+
+export const doSaveOrder = (dataBody?: IDataBody[]) => {
+  if (!!dataBody?.length) {
+    const result: ISaveOrder[] = dataBody.map((el: IDataBody, i: number) => {
+      return { index: i, key: el.key }
+    })
+    return result
+  }
+}
+
+export const doRestoreOrder = (
+  saveOrder: ISaveOrder[],
+  dataBody: IDataBody[]
+) => {
+  if (saveOrder?.length) {
+    const result = saveOrder.map((el: ISaveOrder) =>
+      dataBody.find((elBody: IDataBody) => elBody.key === el.key)
+    )
+    return result
   }
 }
