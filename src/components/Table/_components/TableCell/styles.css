@@ -1,0 +1,15 @@
+.s-ukit-table__cell {
+  padding: 10px;
+  font-weight: 400;
+  border: none;
+  border-radius: 0;
+  cursor: default;
+}
+
+.s-ukit-table__cell_clickable {
+  cursor: pointer;
+}
+
+.s-ukit-table__cell_back {
+  background-color: #e5e5e5;
+}

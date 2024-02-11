@@ -1,0 +1,32 @@
+.s-ukit-table__head {
+  background-color: transparent;
+  cursor: default;
+  border-bottom: 1px solid #b2b7c7;
+}
+
+.s-ukit-table__head:hover {
+  background-color: #e5e5e5;
+  cursor: pointer;
+}
+
+.s-ukit-table__wrap-cell {
+  padding: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.s-ukit-table__icon_clickable {
+  cursor: pointer;
+}
+
+.s-ukit-table_pointer-none {
+  pointer-events: none;
+}
+
+.s-ukit-table__head_background-active {
+  background-color: #e5e5e5;
+}
+
+.s-ukit-table__head_background {
+  background-color: #ffffff;
+}

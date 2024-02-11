@@ -1,29 +1,49 @@
 /* eslint-disable max-len */
 import React from "react"
+
 import cn from "classnames"
 
 import "./styles.css"
 
 interface Props {
-  isClickable: boolean
-  // onClick(): void
+  isActiveIcon?: boolean
+  isClickable?: boolean
+  iconDown?: React.ReactNode
 }
 
-export const IconSortDown: React.FC<Props> = ({ isClickable }) => (
-  <i
-    className={cn(
-      "s-ukit-icon__sort-down",
-      isClickable && "s-ukit-icon__sort_clickable"
+export const IconSortDown: React.FC<Props> = ({
+  isActiveIcon,
+  isClickable,
+  iconDown,
+}) => (
+  <>
+    {Boolean(iconDown) ? (
+      <div
+        className={cn(
+          "s-ukit-icon__sort-up",
+          isClickable && "s-ukit-icon__sort_clickable",
+          isActiveIcon && "s-ukit-icon__sort_color"
+        )}
+      >
+        {iconDown}
+      </div>
+    ) : (
+      <i
+        className={cn(
+          "s-ukit-icon__sort-up",
+          isClickable && "s-ukit-icon__sort_clickable",
+          isActiveIcon && "s-ukit-icon__sort_color"
+        )}
+      >
+        <svg
+          height="16"
+          viewBox="0 0 576 512"
+          width="18"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path d="M151.6 469.6C145.5 476.2 137 480 128 480s-17.5-3.8-23.6-10.4l-88-96c-11.9-13-11.1-33.3 2-45.2s33.3-11.1 45.2 2L96 365.7V64c0-17.7 14.3-32 32-32s32 14.3 32 32V365.7l32.4-35.4c11.9-13 32.2-13.9 45.2-2s13.9 32.2 2 45.2l-88 96zM320 480c-17.7 0-32-14.3-32-32s14.3-32 32-32h32c17.7 0 32 14.3 32 32s-14.3 32-32 32H320zm0-128c-17.7 0-32-14.3-32-32s14.3-32 32-32h96c17.7 0 32 14.3 32 32s-14.3 32-32 32H320zm0-128c-17.7 0-32-14.3-32-32s14.3-32 32-32H480c17.7 0 32 14.3 32 32s-14.3 32-32 32H320zm0-128c-17.7 0-32-14.3-32-32s14.3-32 32-32H544c17.7 0 32 14.3 32 32s-14.3 32-32 32H320z" />
+        </svg>
+      </i>
     )}
-    // onClick={onClick}
-  >
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      height="14"
-      width="18"
-      viewBox="0 160 1024 1024"
-    >
-      <path d="M840.4 300H183.6c-19.7 0-30.7 20.8-18.5 35l328.4 380.8c9.4 10.9 27.5 10.9 37 0L858.9 335c12.2-14.2 1.2-35-18.5-35z" />
-    </svg>
-  </i>
+  </>
 )

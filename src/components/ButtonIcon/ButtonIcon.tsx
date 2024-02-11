@@ -1,10 +1,10 @@
 import { FC } from "react"
 import cn from "classnames"
 
-import { ButtonType } from "../types"
+import { IconLikeActive, IconLikeNotActive } from "../_elements/Icons"
+import { ButtonType } from "./types"
 
 import "./ButtonIcon.css"
-import { IconLikeActive, IconLikeNotActive } from "../_elements/Icons"
 
 export interface ButtonIconProps {
   isActive?: boolean

@@ -1,9 +1,8 @@
 import { FC } from "react"
 import cn from "classnames"
 
-import { ButtonType } from "../types"
-
 import "./Button.css"
+import { ButtonType } from "./types"
 
 export interface ButtonProps {
   disabled?: boolean
