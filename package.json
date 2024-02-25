@@ -1,13 +1,15 @@
 {
   "name": "s-ukit",
   "version": "1.0.5",
+  "homepage": "https://sdntmn.github.io/s-ukit/",
   "description": "",
   "main": "./dist/index.js",
   "scripts": {
     "build-lib": "npx webpack",
     "pub-lib": "npx webpack && npm --no-git-tag-version version patch && npm login && npm publish",
     "sb": "storybook dev -p 6006",
-    "build-sb": "storybook build"
+    "build-sb": "storybook build",
+    "deploy": "gh-pages -d build"
   },
   "keywords": [],
   "author": "Sorokin Denis <sdndev@mail.ru>",
@@ -24,8 +26,10 @@
     "@storybook/react": "^7.3.2",
     "@storybook/react-webpack5": "^7.3.2",
     "@storybook/testing-library": "^0.2.0",
+    "@types/classnames": "^2.3.1",
     "@types/react": "^18.2.21",
     "css-loader": "^6.8.1",
+    "gh-pages": "^6.1.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "storybook": "^7.3.2",
@@ -43,6 +47,6 @@
     "dist"
   ],
   "dependencies": {
-    "classnames": "^2.3.2"
+    "classnames": "^2.5.1"
   }
 }
