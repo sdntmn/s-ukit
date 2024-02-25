@@ -8,36 +8,36 @@ import { TableCell } from "../TableCell"
 import "./styles.css"
 
 interface TableRowProps {
-  rowData: RowType
-  arrKeysNameColumns?: string[]
+  arrKeysNameColumns?: (keyof RowType)[]
+  listColumnsForRender?: (keyof RowType)[]
   nameMainColumnSort?: string
-  sortBy?: NumberSortingColumns
+  rowData: RowType
+  sortByNumberColumns?: NumberSortingColumns
 }
 
 export const TableRow: React.FC<TableRowProps> = ({
   arrKeysNameColumns,
+  listColumnsForRender,
   nameMainColumnSort,
   rowData,
-  sortBy,
+  sortByNumberColumns,
   ...rest
 }: TableRowProps) => (
   <tr className={cn("s-ukit-table__row")} {...rest}>
     {rowData &&
-      Object.entries(rowData).map(([key, value]) => {
-        if (arrKeysNameColumns) {
-          if (arrKeysNameColumns.includes(key)) {
-            return (
-              <TableCell
-                key={key}
-                value={value}
-                isMainColumSort={nameMainColumnSort === key}
-                sortBy={sortBy}
-              />
-            )
-          }
-        } else {
-          return <TableCell key={key} value={value} />
+      arrKeysNameColumns &&
+      arrKeysNameColumns.map((colName: keyof RowType) => {
+        if (listColumnsForRender?.includes(colName)) {
+          return (
+            <TableCell
+              key={colName}
+              value={rowData[colName]}
+              isMainColumSort={nameMainColumnSort === colName}
+              sortByNumberColumns={sortByNumberColumns}
+            />
+          )
         }
+        return null
       })}
   </tr>
 )

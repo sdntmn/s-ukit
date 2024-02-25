@@ -7,16 +7,18 @@ import "./styles.css"
 
 interface TableBodyProps {
   rows: RowType[]
-  arrKeysNameColumns?: string[]
+  arrKeysNameColumns?: (keyof RowType)[]
+  listColumnsForRender?: (keyof RowType)[]
   nameMainColumnSort?: string
-  sortBy?: NumberSortingColumns
+  sortByNumberColumns?: NumberSortingColumns
 }
 
 export const TableBody: React.FC<TableBodyProps> = ({
   arrKeysNameColumns,
+  listColumnsForRender,
   nameMainColumnSort,
   rows,
-  sortBy,
+  sortByNumberColumns,
   ...rest
 }: TableBodyProps) => (
   <tbody className="s-ukit-table__body" {...rest}>
@@ -24,10 +26,11 @@ export const TableBody: React.FC<TableBodyProps> = ({
       rows.map((row: RowType) => (
         <TableRow
           arrKeysNameColumns={arrKeysNameColumns}
+          listColumnsForRender={listColumnsForRender}
           nameMainColumnSort={nameMainColumnSort}
           key={row.id}
           rowData={row}
-          sortBy={sortBy}
+          sortByNumberColumns={sortByNumberColumns}
         />
       ))}
   </tbody>

@@ -97,14 +97,14 @@ export const Base: Story = {
 }
 
 export const TableSortOneColumns = {
-  args: { columns: dataColumns, rows: dataRows, sortBy: "one" },
+  args: { columns: dataColumns, rows: dataRows, sortByNumberColumns: "one" },
 }
 
 export const TableSortTwoColumns = {
   args: {
     columns: dataColumns,
     rows: dataRows,
-    sortBy: "two",
+    sortByNumberColumns: "two",
   },
 }
 
@@ -112,7 +112,7 @@ export const TableSortAddIndexColumn = {
   args: {
     columns: dataColumns,
     rows: dataRows,
-    sortBy: "two",
+    sortByNumberColumns: "two",
     nameColumnIndex: "NDX",
   },
 }
@@ -121,7 +121,7 @@ export const TableSortChangeIcon = {
   args: {
     columns: dataColumns,
     rows: dataRows,
-    sortBy: "one",
+    sortByNumberColumns: "one",
     iconUp: (
       <i>
         <svg
@@ -146,5 +146,15 @@ export const TableSortChangeIcon = {
         </svg>
       </i>
     ),
+  },
+}
+
+export const TableSortEditColumns = {
+  args: {
+    columns: dataColumns,
+    rows: dataRows,
+    sortByNumberColumns: "two",
+    nameColumnIndex: "N",
+    isEditColumns: true,
   },
 }

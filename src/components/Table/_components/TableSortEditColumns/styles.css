@@ -1,0 +1,68 @@
+.s-ukit-table__edit-columns {
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+.s-ukit-table__button {
+  position: relative;
+  cursor: pointer;
+  background: none;
+  padding: 10px 0;
+  outline: none;
+  border: none;
+  transition: all 0.3s ease-in-out;
+  user-select: none;
+}
+
+.s-ukit-table__button-reset {
+  position: relative;
+  cursor: pointer;
+  background: none;
+  outline: none;
+  border: none;
+  transition: all 0.3s ease-in-out;
+  user-select: none;
+  padding: 4px;
+}
+
+.s-ukit-table__popover {
+  position: absolute;
+  top: 44px;
+  padding: 4px;
+  width: max-content;
+  display: flex;
+  flex-direction: column;
+  background: #FFF;
+  border: 1px solid #5c53ac;
+  border-radius: 4px;
+  box-sizing: border-box;
+  overflow-y: auto;
+  max-width: 120px;
+}
+
+.s-ukit-table__checkbox-wrap {
+  display: flex;
+  border-radius: 4px;
+  padding: 4px;
+}
+
+.s-ukit-table__checkbox-wrap:hover {
+  background-color: #e5e5e5;
+}
+
+.s-ukit-table__button-disabled {
+  pointer-events: none;
+  background-color: none;
+}
+
+.s-ukit-table__input {
+  cursor: pointer;
+}
+
+.s-ukit-table__checkbox-label {
+  cursor: pointer;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

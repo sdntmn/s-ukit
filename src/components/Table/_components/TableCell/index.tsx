@@ -6,22 +6,22 @@ import { NumberSortingColumns } from "../../types"
 import "./styles.css"
 
 interface TableCellProps {
-  value: string
+  value?: string
   isMainColumSort?: boolean
-  sortBy?: NumberSortingColumns
+  sortByNumberColumns?: NumberSortingColumns
 }
 
 export const TableCell: React.FC<TableCellProps> = ({
   value,
   isMainColumSort,
-  sortBy,
+  sortByNumberColumns,
   ...rest
 }: TableCellProps) => (
   <td
     className={cn(
       "s-ukit-table__cell",
       isMainColumSort &&
-        sortBy === NumberSortingColumns.TWO &&
+        sortByNumberColumns === NumberSortingColumns.TWO &&
         "s-ukit-table__cell_back"
     )}
     {...rest}

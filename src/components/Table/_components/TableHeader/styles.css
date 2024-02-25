@@ -9,6 +9,16 @@
   cursor: pointer;
 }
 
+.s-ukit-table__head-no-sort {
+  background-color: transparent;
+  cursor: default;
+  border-bottom: 1px solid #b2b7c7;
+}
+
+.s-ukit-table__head-no-sort:hover {
+  background-color: #e5e5e5;
+}
+
 .s-ukit-table__wrap-cell {
   padding: 10px;
   display: flex;

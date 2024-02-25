@@ -25,6 +25,7 @@ import {
 } from "./utils"
 
 import "./styles.css"
+import { TableSortEditColumns } from "./_components/TableSortEditColumns"
 
 export interface TableProps<T extends RowType>
   extends TableHTMLAttributes<HTMLTableElement> {
@@ -32,9 +33,11 @@ export interface TableProps<T extends RowType>
   columns?: Column<T>[]
   iconUp?: React.ReactNode
   iconDown?: React.ReactNode
+  iconEditColumns?: React.ReactNode
+  isEditColumns?: boolean
   nameColumnIndex?: string
   rows: RowType<T>[]
-  sortBy?: NumberSortingColumns
+  sortByNumberColumns?: NumberSortingColumns
 }
 
 export const Table: React.FC<TableProps<any>> = ({
@@ -42,9 +45,11 @@ export const Table: React.FC<TableProps<any>> = ({
   columns,
   iconUp,
   iconDown,
+  iconEditColumns,
+  isEditColumns = false,
   nameColumnIndex,
   rows,
-  sortBy = NumberSortingColumns.ZERO,
+  sortByNumberColumns = NumberSortingColumns.ZERO,
   ...rest
 }: TableProps<any>) => {
   const [currentKey, setCurrentKey] = useState<KeySort<RowType>>()
@@ -52,6 +57,23 @@ export const Table: React.FC<TableProps<any>> = ({
   const [data, setData] = useState<RowType[]>(rows)
   const [orderAscending, setOrderAscending] = useState<SaveOrder[]>([])
   const [orderDescending, setOrderDescending] = useState<SaveOrder[]>([])
+
+  const arrKeysNameColumns = useCallback(
+    (
+      columns?: Column<RowType>[],
+      nameColumnIndex?: string
+    ): (keyof RowType)[] => {
+      if (columns) {
+        return getKeysNamesColumns(columns, nameColumnIndex)
+      }
+      return []
+    },
+    [columns, nameColumnIndex]
+  )
+
+  const [listColumnsForRender, setListColumnsForRender] = useState<
+    (keyof RowType)[]
+  >(arrKeysNameColumns(columns, nameColumnIndex))
 
   const sortByOneColumn = (key: KeySort<RowType>): void => {
     setCurrentKey(key)
@@ -115,10 +137,10 @@ export const Table: React.FC<TableProps<any>> = ({
   }
 
   const setKeySort = (key: Column<RowType>): void => {
-    if (sortBy === NumberSortingColumns.ONE) {
+    if (sortByNumberColumns === NumberSortingColumns.ONE) {
       return sortByOneColumn(setKey(key, currentKey))
     }
-    if (sortBy === NumberSortingColumns.TWO) {
+    if (sortByNumberColumns === NumberSortingColumns.TWO) {
       const updateKeys = updateParametersKeys(key, currentKeys)
       return sortByTwoColumns(key, updateKeys)
     }
@@ -149,37 +171,61 @@ export const Table: React.FC<TableProps<any>> = ({
     [rows, nameColumnIndex]
   )
 
-  const arrKeysNameColumns = useCallback(
-    (columns: Column<RowType>[], nameColumnIndex?: string): string[] => {
-      return getKeysNamesColumns(columns, nameColumnIndex)
-    },
-    [columns, nameColumnIndex]
-  )
+  const resetKeysAndDataSort = (): void => {
+    if (Object.keys(currentKeys).length || currentKey) {
+      setCurrentKey(undefined)
+      setCurrentKeys({})
+      setData(rows)
+    }
+  }
 
   return (
-    <table className={cn("s-ukit-table", className)} {...rest}>
-      {columns?.length && (
-        <TableHeader
-          columns={dataColumns(columns, nameColumnIndex)}
-          currentKey={currentKey}
-          currentKeys={currentKeys}
-          iconUp={iconUp}
-          iconDown={iconDown}
-          setKeySort={setKeySort}
-          sortBy={sortBy}
-        />
-      )}
-
-      {data && (
-        <TableBody
+    <>
+      {columns?.length && isEditColumns && (
+        <TableSortEditColumns
           arrKeysNameColumns={
             columns && arrKeysNameColumns(columns, nameColumnIndex)
           }
-          nameMainColumnSort={currentKeys?.mainKey?.name}
-          rows={dataRows(data, nameColumnIndex)}
-          sortBy={sortBy}
+          iconEditColumns={iconEditColumns}
+          columns={dataColumns(columns, nameColumnIndex)}
+          onChangeColumnsForRender={setListColumnsForRender}
+          listColumnsForRender={listColumnsForRender}
+          resetKeysAndDataSort={resetKeysAndDataSort}
         />
       )}
-    </table>
+      <table
+        className={cn(
+          "s-ukit-table",
+          !listColumnsForRender.length && "itpc-table-sort__empty",
+          className
+        )}
+        {...rest}
+      >
+        {columns?.length && (
+          <TableHeader
+            columns={dataColumns(columns, nameColumnIndex)}
+            listColumnsForRender={listColumnsForRender}
+            currentKey={currentKey}
+            currentKeys={currentKeys}
+            iconUp={iconUp}
+            iconDown={iconDown}
+            setKeySort={setKeySort}
+            sortByNumberColumns={sortByNumberColumns}
+          />
+        )}
+
+        {data && (
+          <TableBody
+            arrKeysNameColumns={
+              columns && arrKeysNameColumns(columns, nameColumnIndex)
+            }
+            listColumnsForRender={listColumnsForRender}
+            nameMainColumnSort={currentKeys?.mainKey?.name}
+            rows={dataRows(data, nameColumnIndex)}
+            sortByNumberColumns={sortByNumberColumns}
+          />
+        )}
+      </table>
+    </>
   )
 }

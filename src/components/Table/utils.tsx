@@ -29,13 +29,13 @@ export const toggleSort = (orderSort: SortType): SortType => {
   }
 }
 
-const getKeysNames = (column: Column<RowType>[]): string[] =>
+const getKeysNames = (column: Column<RowType>[]): (keyof RowType)[] =>
   column?.map((item: Column<RowType>) => item.name)
 
 export const getKeysNamesColumns = (
   columns: Column<RowType>[],
   nameColumnIndex?: string
-): string[] => {
+): (keyof RowType)[] => {
   if (nameColumnIndex !== undefined) {
     return [indexProperty, ...getKeysNames(columns)]
   } else {

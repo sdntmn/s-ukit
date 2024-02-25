@@ -20,7 +20,8 @@ interface TableHeaderProps extends HTMLAttributes<HTMLTableCellElement> {
   currentKeys?: KeysSort<RowType>
   iconUp?: React.ReactNode
   iconDown?: React.ReactNode
-  sortBy?: NumberSortingColumns
+  listColumnsForRender?: (keyof RowType)[]
+  sortByNumberColumns?: NumberSortingColumns
   setKeySort?: (key: Column<RowType>) => void
 }
 
@@ -30,14 +31,18 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
   currentKeys,
   iconUp,
   iconDown,
-  sortBy,
+  listColumnsForRender,
+  sortByNumberColumns,
   setKeySort,
 }: TableHeaderProps) => (
   <thead className="s-ukit-table__head">
     <tr>
       {columns &&
         columns.map((column: Column<RowType>, index: number) => {
-          if (sortBy === NumberSortingColumns.TWO) {
+          if (
+            sortByNumberColumns === NumberSortingColumns.TWO &&
+            listColumnsForRender?.includes(column.name)
+          ) {
             return (
               <th
                 className={cn(
@@ -62,31 +67,48 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
             )
           }
 
-          return (
-            <th
-              className={cn(
-                "s-ukit-table__head",
-                Boolean(column?.isSortable) &&
-                  sortBy !== NumberSortingColumns.ZERO
-                  ? "s-ukit-table_clickable"
-                  : "s-ukit-table_pointer-none",
-                currentKey?.name === column?.name &&
-                  currentKey?.order !== SortType.NONE &&
-                  sortBy !== NumberSortingColumns.ZERO
-                  ? "s-ukit-table__head_background-active"
-                  : "s-ukit-table__head_background"
-              )}
-              data-column-key={column.name}
-              key={index}
-              onClick={() => setKeySort?.(column)}
-            >
-              <div className="s-ukit-table__wrap-cell">
-                {column.title}
-                {sortBy === NumberSortingColumns.ONE &&
-                  renderIcon(column, currentKey, iconUp, iconDown)}
-              </div>
-            </th>
-          )
+          if (
+            sortByNumberColumns === NumberSortingColumns.ONE &&
+            listColumnsForRender?.includes(column.name)
+          ) {
+            return (
+              <th
+                className={cn(
+                  "s-ukit-table__head",
+                  Boolean(column?.isSortable)
+                    ? "s-ukit-table_clickable"
+                    : "s-ukit-table_pointer-none",
+                  currentKey?.name === column?.name &&
+                    currentKey?.order !== SortType.NONE
+                    ? "s-ukit-table__head_background-active"
+                    : "s-ukit-table__head_background"
+                )}
+                key={column.name}
+                onClick={() => setKeySort?.(column)}
+              >
+                <div className="s-ukit-table__wrap-cell">
+                  {column.title}
+                  <div className="s-ukit-table__wrap-icon">
+                    {renderIcon(column, currentKey, iconUp, iconDown)}
+                  </div>
+                </div>
+              </th>
+            )
+          }
+          if (
+            sortByNumberColumns === NumberSortingColumns.ZERO &&
+            listColumnsForRender?.includes(column.name)
+          ) {
+            return (
+              <th
+                className={cn("s-ukit-table__head-no-sort")}
+                key={column.name}
+              >
+                <div className="s-ukit-table__wrap-cell">{column.title}</div>
+              </th>
+            )
+          }
+          return null
         })}
     </tr>
   </thead>
