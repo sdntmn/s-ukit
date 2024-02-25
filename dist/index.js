@@ -1,2 +1,132 @@
-/*! For license information please see index.js.LICENSE.txt */
-!function(e,t){if("object"==typeof exports&&"object"==typeof module)module.exports=t(require("react"));else if("function"==typeof define&&define.amd)define(["react"],t);else{var n="object"==typeof exports?t(require("react")):t(e.react);for(var r in n)("object"==typeof exports?exports:e)[r]=n[r]}}(self,(e=>(()=>{"use strict";var t={606:(e,t,n)=>{n.d(t,{Z:()=>s});var r=n(81),o=n.n(r),a=n(645),i=n.n(a)()(o());i.push([e.id,".my-button {\n  padding: 2px 4px;\n  border: 2px solid red;\n  color:blue;\n  background: yellowgreen;\n}\n\n\n.big-btn {\n  font-size: 24px;\n  padding: 4px 16px;\n}\n",""]);const s=i},849:(e,t,n)=>{n.d(t,{Z:()=>s});var r=n(81),o=n.n(r),a=n(645),i=n.n(a)()(o());i.push([e.id,".my-input {\n  padding: 5px 10px;\n  border: 2px solid red;\n}\n\n\n.big-input {\n  font-size: 24px;\n  padding: 10px 20px;\n}\n",""]);const s=i},645:e=>{e.exports=function(e){var t=[];return t.toString=function(){return this.map((function(t){var n="",r=void 0!==t[5];return t[4]&&(n+="@supports (".concat(t[4],") {")),t[2]&&(n+="@media ".concat(t[2]," {")),r&&(n+="@layer".concat(t[5].length>0?" ".concat(t[5]):""," {")),n+=e(t),r&&(n+="}"),t[2]&&(n+="}"),t[4]&&(n+="}"),n})).join("")},t.i=function(e,n,r,o,a){"string"==typeof e&&(e=[[null,e,void 0]]);var i={};if(r)for(var s=0;s<this.length;s++){var c=this[s][0];null!=c&&(i[c]=!0)}for(var l=0;l<e.length;l++){var u=[].concat(e[l]);r&&i[u[0]]||(void 0!==a&&(void 0===u[5]||(u[1]="@layer".concat(u[5].length>0?" ".concat(u[5]):""," {").concat(u[1],"}")),u[5]=a),n&&(u[2]?(u[1]="@media ".concat(u[2]," {").concat(u[1],"}"),u[2]=n):u[2]=n),o&&(u[4]?(u[1]="@supports (".concat(u[4],") {").concat(u[1],"}"),u[4]=o):u[4]="".concat(o)),t.push(u))}},t}},81:e=>{e.exports=function(e){return e[1]}},251:(e,t,n)=>{var r=n(156),o=Symbol.for("react.element"),a=Symbol.for("react.fragment"),i=Object.prototype.hasOwnProperty,s=r.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED.ReactCurrentOwner,c={key:!0,ref:!0,__self:!0,__source:!0};function l(e,t,n){var r,a={},l=null,u=null;for(r in void 0!==n&&(l=""+n),void 0!==t.key&&(l=""+t.key),void 0!==t.ref&&(u=t.ref),t)i.call(t,r)&&!c.hasOwnProperty(r)&&(a[r]=t[r]);if(e&&e.defaultProps)for(r in t=e.defaultProps)void 0===a[r]&&(a[r]=t[r]);return{$$typeof:o,type:e,key:l,ref:u,props:a,_owner:s.current}}t.Fragment=a,t.jsx=l,t.jsxs=l},893:(e,t,n)=>{e.exports=n(251)},844:(e,t,n)=>{n.r(t),n.d(t,{default:()=>m});var r=n(379),o=n.n(r),a=n(795),i=n.n(a),s=n(569),c=n.n(s),l=n(565),u=n.n(l),p=n(216),d=n.n(p),f=n(589),y=n.n(f),v=n(606),b={};b.styleTagTransform=y(),b.setAttributes=u(),b.insert=c().bind(null,"head"),b.domAPI=i(),b.insertStyleElement=d(),o()(v.Z,b);const m=v.Z&&v.Z.locals?v.Z.locals:void 0},872:(e,t,n)=>{n.r(t),n.d(t,{default:()=>m});var r=n(379),o=n.n(r),a=n(795),i=n.n(a),s=n(569),c=n.n(s),l=n(565),u=n.n(l),p=n(216),d=n.n(p),f=n(589),y=n.n(f),v=n(849),b={};b.styleTagTransform=y(),b.setAttributes=u(),b.insert=c().bind(null,"head"),b.domAPI=i(),b.insertStyleElement=d(),o()(v.Z,b);const m=v.Z&&v.Z.locals?v.Z.locals:void 0},379:e=>{var t=[];function n(e){for(var n=-1,r=0;r<t.length;r++)if(t[r].identifier===e){n=r;break}return n}function r(e,r){for(var a={},i=[],s=0;s<e.length;s++){var c=e[s],l=r.base?c[0]+r.base:c[0],u=a[l]||0,p="".concat(l," ").concat(u);a[l]=u+1;var d=n(p),f={css:c[1],media:c[2],sourceMap:c[3],supports:c[4],layer:c[5]};if(-1!==d)t[d].references++,t[d].updater(f);else{var y=o(f,r);r.byIndex=s,t.splice(s,0,{identifier:p,updater:y,references:1})}i.push(p)}return i}function o(e,t){var n=t.domAPI(t);return n.update(e),function(t){if(t){if(t.css===e.css&&t.media===e.media&&t.sourceMap===e.sourceMap&&t.supports===e.supports&&t.layer===e.layer)return;n.update(e=t)}else n.remove()}}e.exports=function(e,o){var a=r(e=e||[],o=o||{});return function(e){e=e||[];for(var i=0;i<a.length;i++){var s=n(a[i]);t[s].references--}for(var c=r(e,o),l=0;l<a.length;l++){var u=n(a[l]);0===t[u].references&&(t[u].updater(),t.splice(u,1))}a=c}}},569:e=>{var t={};e.exports=function(e,n){var r=function(e){if(void 0===t[e]){var n=document.querySelector(e);if(window.HTMLIFrameElement&&n instanceof window.HTMLIFrameElement)try{n=n.contentDocument.head}catch(e){n=null}t[e]=n}return t[e]}(e);if(!r)throw new Error("Couldn't find a style target. This probably means that the value for the 'insert' parameter is invalid.");r.appendChild(n)}},216:e=>{e.exports=function(e){var t=document.createElement("style");return e.setAttributes(t,e.attributes),e.insert(t,e.options),t}},565:(e,t,n)=>{e.exports=function(e){var t=n.nc;t&&e.setAttribute("nonce",t)}},795:e=>{e.exports=function(e){if("undefined"==typeof document)return{update:function(){},remove:function(){}};var t=e.insertStyleElement(e);return{update:function(n){!function(e,t,n){var r="";n.supports&&(r+="@supports (".concat(n.supports,") {")),n.media&&(r+="@media ".concat(n.media," {"));var o=void 0!==n.layer;o&&(r+="@layer".concat(n.layer.length>0?" ".concat(n.layer):""," {")),r+=n.css,o&&(r+="}"),n.media&&(r+="}"),n.supports&&(r+="}");var a=n.sourceMap;a&&"undefined"!=typeof btoa&&(r+="\n/*# sourceMappingURL=data:application/json;base64,".concat(btoa(unescape(encodeURIComponent(JSON.stringify(a))))," */")),t.styleTagTransform(r,e,t.options)}(t,e,n)},remove:function(){!function(e){if(null===e.parentNode)return!1;e.parentNode.removeChild(e)}(t)}}}},589:e=>{e.exports=function(e,t){if(t.styleSheet)t.styleSheet.cssText=e;else{for(;t.firstChild;)t.removeChild(t.firstChild);t.appendChild(document.createTextNode(e))}}},519:function(e,t,n){var r=this&&this.__rest||function(e,t){var n={};for(var r in e)Object.prototype.hasOwnProperty.call(e,r)&&t.indexOf(r)<0&&(n[r]=e[r]);if(null!=e&&"function"==typeof Object.getOwnPropertySymbols){var o=0;for(r=Object.getOwnPropertySymbols(e);o<r.length;o++)t.indexOf(r[o])<0&&Object.prototype.propertyIsEnumerable.call(e,r[o])&&(n[r[o]]=e[r[o]])}return n};Object.defineProperty(t,"__esModule",{value:!0});const o=n(893);n(844),t.default=e=>{var{children:t,color:n,big:a}=e,i=r(e,["children","color","big"]);const s=["my-button"];return a&&s.push("big-btn"),(0,o.jsx)("button",Object.assign({},i,{className:s.join(" "),style:{color:n},children:t}))}},633:function(e,t,n){var r=this&&this.__rest||function(e,t){var n={};for(var r in e)Object.prototype.hasOwnProperty.call(e,r)&&t.indexOf(r)<0&&(n[r]=e[r]);if(null!=e&&"function"==typeof Object.getOwnPropertySymbols){var o=0;for(r=Object.getOwnPropertySymbols(e);o<r.length;o++)t.indexOf(r[o])<0&&Object.prototype.propertyIsEnumerable.call(e,r[o])&&(n[r[o]]=e[r[o]])}return n};Object.defineProperty(t,"__esModule",{value:!0});const o=n(893);n(872),t.default=e=>{var{big:t,placeholder:n,label:a}=e,i=r(e,["big","placeholder","label"]);const s=["my-input"];return t&&s.push("big-input"),(0,o.jsxs)("label",{children:[a,(0,o.jsx)("input",Object.assign({placeholder:n,className:s.join(" ")},i))]})}},607:function(e,t,n){var r=this&&this.__importDefault||function(e){return e&&e.__esModule?e:{default:e}};Object.defineProperty(t,"__esModule",{value:!0}),t.MyInput=t.MyButton=void 0;const o=r(n(633));t.MyInput=o.default;const a=r(n(519));t.MyButton=a.default},156:t=>{t.exports=e}},n={};function r(e){var o=n[e];if(void 0!==o)return o.exports;var a=n[e]={id:e,exports:{}};return t[e].call(a.exports,a,a.exports,r),a.exports}return r.n=e=>{var t=e&&e.__esModule?()=>e.default:()=>e;return r.d(t,{a:t}),t},r.d=(e,t)=>{for(var n in t)r.o(t,n)&&!r.o(e,n)&&Object.defineProperty(e,n,{enumerable:!0,get:t[n]})},r.o=(e,t)=>Object.prototype.hasOwnProperty.call(e,t),r.r=e=>{"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})},r.nc=void 0,r(607)})()));
+"use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.TableSort = void 0;
+const react_1 = __importStar(require("react"));
+const classnames_1 = __importDefault(require("classnames"));
+const _components_1 = require("../_components");
+const types_1 = require("./src/components/Table/types");
+const utils_1 = require("./src/components/Table/utils");
+require("./styles.css");
+exports.TableSort = (_a) => {
+    var _b;
+    var { className = "", columns, iconUp, iconDown, nameColumnIndex, rows, sortBy = types_1.NumberSortingColumns.ZERO } = _a, rest = __rest(_a, ["className", "columns", "iconUp", "iconDown", "nameColumnIndex", "rows", "sortBy"]);
+    const [currentKey, setCurrentKey] = react_1.useState();
+    const [currentKeys, setCurrentKeys] = react_1.useState({});
+    const [data, setData] = react_1.useState(rows);
+    const [orderAscending, setOrderAscending] = react_1.useState([]);
+    const [orderDescending, setOrderDescending] = react_1.useState([]);
+    const sortByOneColumn = (key) => {
+        setCurrentKey(key);
+        switch (key.order) {
+            case types_1.SortType.ASCENDING:
+                setData([...data].sort(utils_1.byKey(key)));
+                break;
+            case types_1.SortType.DESCENDING:
+                setData([...data].reverse());
+                break;
+            default:
+                setData(rows);
+        }
+    };
+    const sortByTwoColumns = (key, updateKeysSort) => {
+        setCurrentKeys(updateKeysSort);
+        if (Object.keys(updateKeysSort).length === 0) {
+            setData(rows);
+        }
+        const mainKey = updateKeysSort === null || updateKeysSort === void 0 ? void 0 : updateKeysSort.mainKey;
+        const secondKey = updateKeysSort === null || updateKeysSort === void 0 ? void 0 : updateKeysSort.secondKey;
+        if (key.name === (mainKey === null || mainKey === void 0 ? void 0 : mainKey.name)) {
+            {
+                setData([...data].sort(utils_1.byKeys(updateKeysSort)));
+            }
+        }
+        if (key.name === (secondKey === null || secondKey === void 0 ? void 0 : secondKey.name)) {
+            if ((secondKey === null || secondKey === void 0 ? void 0 : secondKey.order) !== types_1.SortType.NONE &&
+                (mainKey === null || mainKey === void 0 ? void 0 : mainKey.order) !== types_1.SortType.NONE) {
+                setData([...data].sort(utils_1.byKeys(updateKeysSort)));
+                if (!orderAscending.length && (mainKey === null || mainKey === void 0 ? void 0 : mainKey.order) === types_1.SortType.ASCENDING) {
+                    setOrderAscending(utils_1.order([...data]));
+                }
+                if (!orderDescending.length && (mainKey === null || mainKey === void 0 ? void 0 : mainKey.order) === types_1.SortType.DESCENDING) {
+                    setOrderDescending(utils_1.order([...data]));
+                }
+            }
+            if ((secondKey === null || secondKey === void 0 ? void 0 : secondKey.order) === types_1.SortType.NONE) {
+                if ((mainKey === null || mainKey === void 0 ? void 0 : mainKey.order) === types_1.SortType.ASCENDING) {
+                    setData(utils_1.restoreOrder(orderAscending, [...data]));
+                    setOrderAscending([]);
+                }
+                else {
+                    setData(utils_1.restoreOrder(orderDescending, [...data]));
+                    setOrderDescending([]);
+                }
+            }
+        }
+    };
+    const setKeySort = (key) => {
+        if (sortBy === types_1.NumberSortingColumns.ONE) {
+            return sortByOneColumn(utils_1.setKey(key, currentKey));
+        }
+        if (sortBy === types_1.NumberSortingColumns.TWO) {
+            const updateKeys = utils_1.updateParametersKeys(key, currentKeys);
+            return sortByTwoColumns(key, updateKeys);
+        }
+    };
+    const dataColumns = react_1.useCallback((columns, nameColumnIndex) => {
+        if (nameColumnIndex !== undefined) {
+            return utils_1.addIndexInColumns(columns, nameColumnIndex);
+        }
+        else {
+            return columns;
+        }
+    }, [columns, nameColumnIndex]);
+    const dataRows = react_1.useCallback((rows, nameColumnIndex) => {
+        if (nameColumnIndex !== undefined) {
+            return utils_1.addIndexInRows(rows);
+        }
+        else {
+            return rows;
+        }
+    }, [rows, nameColumnIndex]);
+    const arrKeysNameColumns = react_1.useCallback((columns, nameColumnIndex) => {
+        return utils_1.getKeysNamesColumns(columns, nameColumnIndex);
+    }, [columns, nameColumnIndex]);
+    return (<table className={classnames_1.default("itpc-table-sort", className)} {...rest}>
+      {(columns === null || columns === void 0 ? void 0 : columns.length) && (<_components_1.TableHeader columns={dataColumns(columns, nameColumnIndex)} currentKey={currentKey} currentKeys={currentKeys} iconUp={iconUp} iconDown={iconDown} setKeySort={setKeySort} sortBy={sortBy}/>)}
+
+      {data && (<_components_1.TableBody arrKeysNameColumns={columns && arrKeysNameColumns(columns, nameColumnIndex)} nameMainColumnSort={(_b = currentKeys === null || currentKeys === void 0 ? void 0 : currentKeys.mainKey) === null || _b === void 0 ? void 0 : _b.name} rows={dataRows(data, nameColumnIndex)} sortBy={sortBy}/>)}
+    </table>);
+};

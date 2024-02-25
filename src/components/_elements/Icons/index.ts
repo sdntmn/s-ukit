@@ -1,0 +1,7 @@
+export { IconLikeNotActive } from "./IconLikeNotActive/IconLikeNotActive"
+export { IconLikeActive } from "./IconLikeActive/IconLikeActive"
+export { IconSortUp } from "./IconSortUp"
+export { IconSortDown } from "./IconSortDown"
+export { IconLock } from "./IconLock"
+export { IconUnlock } from "./IconUnlock"
+export { IconTableColumns } from "./IconTableColumns"

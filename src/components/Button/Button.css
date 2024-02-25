@@ -1,0 +1,27 @@
+.skit__button {
+  padding: 6px 20px;
+  min-width: 40px;
+  min-height: 40px;
+  background-color: #5c53ac;
+  border: 1px solid #5c53ac;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  outline: none;
+  transition: all 0.3s ease-in-out;
+  user-select: none;
+}
+
+.skit__button:hover {
+  background-color: #6f65cb;
+  border-color: #6f65cb;
+  color: #fff;
+}
+
+.skit__button:disabled {
+  background-color: #b2b7c7;
+  border-color: #b2b7c7;
+  color: #fff;
+  cursor: default;
+}

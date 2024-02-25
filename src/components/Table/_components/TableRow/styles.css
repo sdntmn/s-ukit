@@ -1,0 +1,12 @@
+.s-ukit-table__row {
+  cursor: default;
+  background-color: transparent;
+}
+
+.s-ukit-table__row:hover {
+  background-color: #e5e5e5;
+}
+
+.s-ukit-table__row_clickable {
+  cursor: pointer;
+}
